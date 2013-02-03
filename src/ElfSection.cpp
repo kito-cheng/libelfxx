@@ -43,4 +43,44 @@ void ElfSection::print(FILE *fp) {
        _entsize);
 }
 
+const char *ElfSection::getNameStr() const {
+  return _nameStr;
+}
+
+uint32_t ElfSection::getName() const {
+  return _name;
+}
+
+uint64_t ElfSection::getFlags() const {
+  return _flags;
+}
+
+uint64_t ElfSection::getAddr() const {
+  return _addr;
+}
+
+uint64_t ElfSection::getOffset() const {
+  return _offset;
+}
+
+uint64_t ElfSection::getSize() const {
+  return _size;
+}
+
+uint32_t ElfSection::getLink() const {
+  return _link;
+}
+
+uint32_t ElfSection::getInfo() const {
+  return _info;
+}
+
+uint64_t ElfSection::getAddralign() const {
+  return _addralign;
+}
+
+uint64_t ElfSection::getEntsize() const {
+  return _entsize;
+}
+
 };

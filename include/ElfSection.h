@@ -12,6 +12,17 @@ class ElfSection {
     ElfSection(const char *name, Elf32_Shdr *shdr);
     ElfSection(const char *name, Elf64_Shdr *shdr);
 
+    const char *getNameStr() const;
+    uint32_t getName() const;
+    uint64_t getFlags() const;
+    uint64_t getAddr() const;
+    uint64_t getOffset() const;
+    uint64_t getSize() const;
+    uint32_t getLink() const;
+    uint32_t getInfo() const;
+    uint64_t getAddralign() const;
+    uint64_t getEntsize() const;
+
     void print(FILE *fp);
   private:
     const char *_nameStr;
