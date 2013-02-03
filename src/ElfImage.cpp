@@ -1,5 +1,6 @@
 #include <ElfImage.h>
 #include <ElfSection.h>
+#include <ElfSymbolTable.h>
 #include <Debug.h>
 
 #include <stdio.h>
@@ -54,7 +55,8 @@ static ElfImage *create32(FILE *fp) {
     }
     Elf32_Shdr *shdrs = (Elf32_Shdr*)(rawData + ehdr->e_shoff);
     Elf32_Shdr *shstrtab = &shdrs[ehdr->e_shstrndx];
-    std::vector<ElfSection*> sections;
+    ElfImage::Sections sections;
+    ElfImage::SectionMap sectionMap;
     int shnum = ehdr->e_shnum;
     for (int i=0;i<shnum;++i) {
        Elf32_Shdr *shdr = &shdrs[i];
@@ -64,9 +66,25 @@ static ElfImage *create32(FILE *fp) {
        DEBUG("Reading section `%s`...\n", sectionName);
        ElfSection *section = new ElfSection(sectionName, shdr);
        sections.push_back(section);
+       sectionMap.insert(std::make_pair(sectionName, section));
+
        section->print(stdout);
     }
 
+    auto symtabItr = sectionMap.find(".symtab");
+    auto strtabItr = sectionMap.find(".strtab");
+    DEBUG("Symtab = %d\n", symtabItr != sectionMap.end());
+    DEBUG("Strtab = %d\n", strtabItr != sectionMap.end());
+    if (symtabItr != sectionMap.end() && strtabItr != sectionMap.end()) {
+      ElfSection *symtab = symtabItr->second;
+      ElfSection *strtab = strtabItr->second;
+      ElfSymbolTable *symbolTable =
+        new ElfSymbolTable(symtab, strtab, rawData, true/* is elf32*/);
+      for (auto symItr : *symbolTable) {
+        ElfSymbol *sym = symItr.second;
+        sym->print(stdout);
+      }
+    }
     return image;
   } while (0);
   /* Error handling... */
