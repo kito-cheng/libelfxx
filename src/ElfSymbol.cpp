@@ -16,10 +16,10 @@ static ElfSymbol::Type info2type32 (uint8_t info) {
   switch (ELF32_ST_TYPE(info)) {
     case STT_NOTYPE:  return ElfSymbol::Type::NOTYPE;
     case STT_OBJECT:  return ElfSymbol::Type::OBJECT;
-    case STT_FUNC:  return ElfSymbol::Type::FUNCTION;
-    case STT_SECTION:  return ElfSymbol::Type::SECTION;
-    case STT_FILE:  return ElfSymbol::Type::FILE;
-    default:         return ElfSymbol::Type::OTHER;
+    case STT_FUNC:    return ElfSymbol::Type::FUNCTION;
+    case STT_SECTION: return ElfSymbol::Type::SECTION;
+    case STT_FILE:    return ElfSymbol::Type::FILE;
+    default:          return ElfSymbol::Type::OTHER;
   }
 }
 
