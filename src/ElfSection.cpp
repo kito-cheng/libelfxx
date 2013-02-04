@@ -20,6 +20,20 @@ ElfSection::ElfSection(const char *name, Elf32_Shdr *shdr)
 {
 }
 
+ElfSection::ElfSection(const char *name, Elf64_Shdr *shdr)
+  : _nameStr(name)
+  , _name(shdr->sh_name)
+  , _flags(shdr->sh_flags)
+  , _addr(shdr->sh_addr)
+  , _offset(shdr->sh_offset)
+  , _size(shdr->sh_size)
+  , _link(shdr->sh_link)
+  , _info(shdr->sh_info)
+  , _addralign(shdr->sh_addralign)
+  , _entsize(shdr->sh_entsize)
+{
+}
+
 void ElfSection::print(FILE *fp) {
   PRINT("Section `%s`:\n"
         "  sh_name : %" PRIu32 "\n"
