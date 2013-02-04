@@ -11,6 +11,66 @@
 
 namespace libelfxx {
 
+
+ElfImage::ElfImage(Elf64_Ehdr *ehdr,
+                   uint8_t *rawData,
+                   Sections *sections,
+                   SectionMap *sectionMap,
+                   ElfSymbolTable *symbolTable,
+                   ElfSymbolTable *dynSymbolTable)
+  : _type(ehdr->e_type)
+  , _machine(ehdr->e_machine)
+  , _version(ehdr->e_version)
+  , _entry(ehdr->e_entry)
+  , _phoff(ehdr->e_phoff)
+  , _shoff(ehdr->e_shoff)
+  , _flags(ehdr->e_flags)
+  , _ehsize(ehdr->e_ehsize)
+  , _phentsize(ehdr->e_phentsize)
+  , _phnum(ehdr->e_phnum)
+  , _shentsize(ehdr->e_shentsize)
+  , _shnum(ehdr->e_shnum)
+  , _shstrndx(ehdr->e_shstrndx)
+  , _rawData(rawData)
+  , _sections(sections)
+  , _sectionMap(sectionMap)
+  , _symbolTable(symbolTable)
+  , _dynSymbolTable(dynSymbolTable)
+  , _elfType(Type::ELF64)
+{
+  std::copy(ehdr->e_ident, ehdr->e_ident+EI_NIDENT, _ident);
+}
+
+ElfImage::ElfImage(Elf32_Ehdr *ehdr,
+                   uint8_t *rawData,
+                   Sections *sections,
+                   SectionMap *sectionMap,
+                   ElfSymbolTable *symbolTable,
+                   ElfSymbolTable *dynSymbolTable)
+  : _type(ehdr->e_type)
+  , _machine(ehdr->e_machine)
+  , _version(ehdr->e_version)
+  , _entry(ehdr->e_entry)
+  , _phoff(ehdr->e_phoff)
+  , _shoff(ehdr->e_shoff)
+  , _flags(ehdr->e_flags)
+  , _ehsize(ehdr->e_ehsize)
+  , _phentsize(ehdr->e_phentsize)
+  , _phnum(ehdr->e_phnum)
+  , _shentsize(ehdr->e_shentsize)
+  , _shnum(ehdr->e_shnum)
+  , _shstrndx(ehdr->e_shstrndx)
+  , _rawData(rawData)
+  , _sections(sections)
+  , _sectionMap(sectionMap)
+  , _symbolTable(symbolTable)
+  , _dynSymbolTable(dynSymbolTable)
+  , _elfType(Type::ELF32)
+{
+  std::copy(ehdr->e_ident, ehdr->e_ident+EI_NIDENT, _ident);
+}
+
+
 ElfImage *ElfImage::create(const char *path) {
   FILE *fp = fopen(path, "rb");
   DEBUG("Open file `%s`...\n", path);
@@ -35,7 +95,23 @@ static bool elfValid(unsigned char elfIdent[EI_NIDENT]) {
   }
 }
 
-static ElfImage *create32(FILE *fp) {
+template<class Elf_Ehdr>
+struct ElfImageData {
+  Elf_Ehdr *ehdr;
+  uint8_t *rawData;
+  ElfImage::Sections *sections;
+  ElfImage::SectionMap *sectionMap;
+  ElfSymbolTable *symbolTable;
+  ElfSymbolTable *dynSymbolTable;
+};
+
+
+
+template<class ElfImageData,
+         class Elf_Ehdr,
+         class Elf_Shdr>
+static bool _create(FILE *fp, ElfImageData *data,
+                    ElfImage::Type elfType) {
   uint8_t *rawData = nullptr;
   fseek(fp, 0l, SEEK_END);
   long int filesize = ftell(fp);
@@ -43,58 +119,71 @@ static ElfImage *create32(FILE *fp) {
 
   rawData = new uint8_t[filesize];
   do {
-    ElfImage *image = nullptr;
     if(fread(rawData, filesize, 1, fp) < 1) {
       ERROR("Read data fail!\n");
       break;
     }
-    Elf32_Ehdr *ehdr = (Elf32_Ehdr*)rawData;
+    Elf_Ehdr *ehdr = reinterpret_cast<Elf_Ehdr*>(rawData);
     if (ehdr->e_shstrndx == SHN_XINDEX) {
       ERROR("Section string table not found!\n");
       break;
     }
-    Elf32_Shdr *shdrs = (Elf32_Shdr*)(rawData + ehdr->e_shoff);
-    Elf32_Shdr *shstrtab = &shdrs[ehdr->e_shstrndx];
-    ElfImage::Sections sections;
-    ElfImage::SectionMap sectionMap;
+    Elf_Shdr *shdrs = reinterpret_cast<Elf_Shdr*>(rawData + ehdr->e_shoff);
+    Elf_Shdr *shstrtab = &shdrs[ehdr->e_shstrndx];
+    ElfImage::Sections *sections = new ElfImage::Sections();
+    ElfImage::SectionMap *sectionMap = new ElfImage::SectionMap();
     int shnum = ehdr->e_shnum;
     for (int i=0;i<shnum;++i) {
-       Elf32_Shdr *shdr = &shdrs[i];
+       Elf_Shdr *shdr = &shdrs[i];
        const char *sectionName = (const char*)(rawData +
                                                shstrtab->sh_offset +
                                                shdr->sh_name);
        DEBUG("Reading section `%s`...\n", sectionName);
        ElfSection *section = new ElfSection(sectionName, shdr);
-       sections.push_back(section);
-       sectionMap.insert(std::make_pair(sectionName, section));
+       sections->push_back(section);
+       sectionMap->insert(std::make_pair(sectionName, section));
 
        section->print(stdout);
     }
 
-    auto symtabItr = sectionMap.find(".symtab");
-    auto strtabItr = sectionMap.find(".strtab");
-    DEBUG("Symtab = %d\n", symtabItr != sectionMap.end());
-    DEBUG("Strtab = %d\n", strtabItr != sectionMap.end());
-    if (symtabItr != sectionMap.end() && strtabItr != sectionMap.end()) {
+    auto symtabItr = sectionMap->find(".symtab");
+    auto strtabItr = sectionMap->find(".strtab");
+    ElfSymbolTable *symbolTable = NULL;
+    if (symtabItr != sectionMap->end() && strtabItr != sectionMap->end()) {
       ElfSection *symtab = symtabItr->second;
       ElfSection *strtab = strtabItr->second;
-      ElfSymbolTable *symbolTable =
-        new ElfSymbolTable(symtab, strtab, rawData, true/* is elf32*/);
+      symbolTable =
+        new ElfSymbolTable(symtab, strtab, rawData, elfType);
       for (auto symItr : *symbolTable) {
         ElfSymbol *sym = symItr.second;
         sym->print(stdout);
       }
     }
-    return image;
+
+    symtabItr = sectionMap->find(".dynsym");
+    strtabItr = sectionMap->find(".dynstr");
+    ElfSymbolTable *dynSymbolTable = NULL;
+    if (symtabItr != sectionMap->end() && strtabItr != sectionMap->end()) {
+      ElfSection *symtab = symtabItr->second;
+      ElfSection *strtab = strtabItr->second;
+      dynSymbolTable =
+        new ElfSymbolTable(symtab, strtab, rawData, elfType);
+      for (auto symItr : *symbolTable) {
+        ElfSymbol *sym = symItr.second;
+        sym->print(stdout);
+      }
+    }
+    data->ehdr = ehdr;
+    data->rawData = rawData;
+    data->sections = sections;
+    data->sectionMap = sectionMap;
+    data->symbolTable = symbolTable;
+    data->dynSymbolTable = dynSymbolTable;
+    return true;
   } while (0);
   /* Error handling... */
   delete []rawData;
-  return nullptr;
-}
-
-static ElfImage *create64(FILE *fp) {
-  ERROR("ELF 64 not support yet!\n");
-  return nullptr;
+  return false;
 }
 
 ElfImage *ElfImage::create(FILE *fp) {
@@ -112,10 +201,26 @@ ElfImage *ElfImage::create(FILE *fp) {
 
   switch (elfIdent[EI_CLASS]) {
     case ELFCLASS32:
-      return create32(fp);
+      {
+        ElfImageData<Elf32_Ehdr> data;
+        if (_create<ElfImageData<Elf32_Ehdr>,
+                    Elf32_Ehdr, Elf32_Shdr>(fp, &data, ELF32)){
+          return new ElfImage(data.ehdr, data.rawData,
+                              data.sections, data.sectionMap,
+                              data.symbolTable, data.dynSymbolTable);
+        }
+      }
       break;
     case ELFCLASS64:
-      return create64(fp);
+      {
+        ElfImageData<Elf64_Ehdr> data;
+        if (_create<ElfImageData<Elf64_Ehdr>,
+                    Elf64_Ehdr, Elf64_Shdr>(fp, &data, ELF64)){
+          return new ElfImage(data.ehdr, data.rawData,
+                              data.sections, data.sectionMap,
+                              data.symbolTable, data.dynSymbolTable);
+        }
+      }
       break;
     case 0: /* Invalid elf type? */
     default:
@@ -123,6 +228,67 @@ ElfImage *ElfImage::create(FILE *fp) {
       break;
   }
   return nullptr;
+}
+
+
+const uint8_t *ElfImage::getIdent() const {
+  return _ident;
+}
+
+uint16_t ElfImage::getType() const {
+  return _type;
+}
+
+uint16_t ElfImage::getMachine() const {
+  return _machine;
+}
+
+uint32_t ElfImage::getVersion() const {
+  return _version;
+}
+
+uint64_t ElfImage::getEntry() const {
+  return _entry;
+}
+
+uint64_t ElfImage::getPhoff() const {
+  return _phoff;
+}
+
+uint64_t ElfImage::getShoff() const {
+  return _shoff;
+}
+
+uint32_t ElfImage::getFlags() const {
+  return _flags;
+}
+
+uint16_t ElfImage::getEhsize() const {
+  return _ehsize;
+}
+
+uint16_t ElfImage::getPhentsize() const {
+  return _phentsize;
+}
+
+uint16_t ElfImage::getPhnum() const {
+  return _phnum;
+}
+
+uint16_t ElfImage::getShentsize() const {
+  return _shentsize;
+}
+
+uint16_t ElfImage::getShnum() const {
+  return _shnum;
+}
+
+uint16_t ElfImage::getShstrndx() const {
+  return _shstrndx;
+}
+
+ElfImage::Type ElfImage::getElfType() const {
+  return _elfType;
 }
 
 };

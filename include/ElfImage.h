@@ -12,9 +12,15 @@
 namespace libelfxx {
 
 class ElfSection;
+class ElfSymbolTable;
 
 class ElfImage {
   public:
+    enum Type {
+      ELFINVALID,
+      ELF32,
+      ELF64,
+    };
     typedef std::vector<ElfSection*> Sections;
     typedef std::map<std::string, ElfSection*> SectionMap;
     typedef Sections::iterator iterator;
@@ -30,10 +36,39 @@ class ElfImage {
     iterator end();
     const_iterator begin() const;
     const_iterator end() const;
+
+    const uint8_t *getIdent() const;
+    uint16_t getType() const;
+    uint16_t getMachine() const;
+    uint32_t getVersion() const;
+    uint64_t getEntry() const;
+    uint64_t getPhoff() const;
+    uint64_t getShoff() const;
+    uint32_t getFlags() const;
+    uint16_t getEhsize() const;
+    uint16_t getPhentsize() const;
+    uint16_t getPhnum() const;
+    uint16_t getShentsize() const;
+    uint16_t getShnum() const;
+    uint16_t getShstrndx() const;
+
+    Type getElfType() const;
+
   private:
-    ElfImage(Elf64_Ehdr *ehdr);
-    ElfImage(Elf32_Ehdr *ehdr);
+    ElfImage(Elf64_Ehdr *ehdr,
+             uint8_t *rawData,
+             Sections *sections,
+             SectionMap *sectionMap,
+             ElfSymbolTable *symbolTable,
+             ElfSymbolTable *dynSymbolTable);
+    ElfImage(Elf32_Ehdr *ehdr,
+             uint8_t *rawData,
+             Sections *sections,
+             SectionMap *sectionMap,
+             ElfSymbolTable *symbolTable,
+             ElfSymbolTable *dynSymbolTable);
     ~ElfImage();
+    uint8_t _ident[EI_NIDENT];
     uint16_t _type;
     uint16_t _machine;
     uint32_t _version;
@@ -47,9 +82,13 @@ class ElfImage {
     uint16_t _shentsize;
     uint16_t _shnum;
     uint16_t _shstrndx;
-    Sections _sections;
-    SectionMap _sectionMap;
-    uint8_t _rawData;
+    uint8_t *_rawData;
+
+    Sections *_sections;
+    SectionMap *_sectionMap;
+    ElfSymbolTable *_symbolTable;
+    ElfSymbolTable *_dynSymbolTable;
+    Type _elfType;
 };
 
 };

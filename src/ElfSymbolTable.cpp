@@ -1,5 +1,7 @@
 #include <ElfSymbolTable.h>
 #include <ElfSection.h>
+#include <ElfImage.h>
+#include <Debug.h>
 
 namespace libelfxx {
 
@@ -10,7 +12,7 @@ static
 ElfSymbolTable::SymbolTable initSymTab(ElfSection *symtab,
                                        ElfSection *strtab,
                                        uint8_t *rawData) {
-  Elf_Sym *syms = (Elf32_Sym*)(rawData + symtab->getOffset());
+  Elf_Sym *syms = reinterpret_cast<Elf_Sym*>(rawData + symtab->getOffset());
   Elf_Word numSym = (symtab->getSize() / symtab->getEntsize());
   ElfSymbolTable::SymbolTable symbolTable;
 
@@ -29,12 +31,20 @@ ElfSymbolTable::SymbolTable initSymTab(ElfSection *symtab,
 ElfSymbolTable::ElfSymbolTable(ElfSection *symtab,
                                ElfSection *strtab,
                                uint8_t *rawData,
-                               bool isElf32) {
-  if (isElf32) {
-    _symtab = initSymTab<Elf32_Sym,
-                         Elf32_Word>(symtab, strtab, rawData);
-  } else {
-    // TODO: ELF64
+                               ElfImage::Type elfType) {
+  switch (elfType) {
+    case ElfImage::ELF32:
+      _symtab = initSymTab<Elf32_Sym,
+                           Elf32_Word>(symtab, strtab, rawData);
+      break;
+    case ElfImage::ELF64:
+      _symtab = initSymTab<Elf64_Sym,
+                           Elf64_Word>(symtab, strtab, rawData);
+      break;
+    default:
+      ERROR("OMG, what's the hell?");
+      abort();
+      break;
   }
 }
 

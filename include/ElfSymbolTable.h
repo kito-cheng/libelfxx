@@ -2,6 +2,7 @@
 #define _LIBELFXX_ELF_SYMBOL_TABLE_H_
 
 #include <ElfSymbol.h>
+#include <ElfImage.h>
 #include <elf.h>
 #include <stdio.h>
 #include <map>
@@ -20,7 +21,7 @@ class ElfSymbolTable {
     ElfSymbolTable(ElfSection *symtab,
                    ElfSection *strtab,
                    uint8_t *rawData,
-                   bool isElf32);
+                   ElfImage::Type elfType);
 
     iterator begin();
     iterator end();
