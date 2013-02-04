@@ -25,6 +25,7 @@ class ElfSymbol {
     };
 
     ElfSymbol(const char *name, Elf32_Sym *sym);
+    ElfSymbol(const char *name, Elf64_Sym *sym);
 
     bool isLocal() const;
     bool isGlobal() const;
