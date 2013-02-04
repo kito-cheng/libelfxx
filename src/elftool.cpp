@@ -293,13 +293,7 @@ elftype2str(uint16_t type)
 }
 
 void printFileHeader(libelfxx::ElfImage *image) {
-  printf("ELF Header:\n");
-  printf("  Magic:   ");
   const uint8_t *ident = image->getIdent();
-  for (int i = 0;i<EI_NIDENT;++i) {
-    printf("%02x ", ident[i]);
-  }
-  printf("\n");
   const char *elfTypeStr = "ELF???";
   switch (image->getElfType()) {
     case libelfxx::ElfImage::ELF32:      elfTypeStr = "ELF32";      break;
@@ -307,8 +301,13 @@ void printFileHeader(libelfxx::ElfImage *image) {
     case libelfxx::ElfImage::ELFINVALID: elfTypeStr = "ELFNONE"; break;
     default:                                              break;
   }
-  printf("  Class:                             %s\n", elfTypeStr);
   uint8_t endian = ident[EI_DATA];
+  uint8_t osabi = ident[EI_OSABI];
+  uint8_t abiVersion = ident[EI_ABIVERSION];
+  const char *currentStr = "";
+  if (image->getVersion() == EV_CURRENT) {
+    currentStr = " (current)";
+  }
   const char *endianStr = "none";
   switch (endian) {
     case ELFDATANONE: endianStr = "none";                          break;
@@ -316,15 +315,17 @@ void printFileHeader(libelfxx::ElfImage *image) {
     case ELFDATA2MSB: endianStr = "2's complement, big endian";    break;
     default:          endianStr = "Unknown endian!";               break;
   }
-  printf("  Data:                              %s\n", endianStr);
-  printf("  Version:                           %" PRIu8 "", image->getVersion());
-  if (image->getVersion() == EV_CURRENT) {
-    printf(" (current)");
+
+  printf("ELF Header:\n");
+  printf("  Magic:   ");
+  for (int i = 0;i<EI_NIDENT;++i) {
+    printf("%02x ", ident[i]);
   }
   printf("\n");
-  uint8_t osabi = ident[EI_OSABI];
-  uint8_t abiVersion = ident[EI_ABIVERSION];
-
+  printf("  Class:                             %s\n", elfTypeStr);
+  printf("  Data:                              %s\n", endianStr);
+  printf("  Version:                           %" PRIu8 "%s\n",
+         image->getVersion(), currentStr);
   printf("  OS/ABI:                            %s\n",
          osabi2str(osabi));
   printf("  ABI Version:                       %" PRIu8 "\n",
