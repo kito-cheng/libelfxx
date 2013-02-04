@@ -138,12 +138,9 @@ static bool _create(FILE *fp, ElfImageData *data,
        const char *sectionName = (const char*)(rawData +
                                                shstrtab->sh_offset +
                                                shdr->sh_name);
-       DEBUG("Reading section `%s`...\n", sectionName);
        ElfSection *section = new ElfSection(sectionName, shdr);
        sections->push_back(section);
        sectionMap->insert(std::make_pair(sectionName, section));
-
-       section->print(stdout);
     }
 
     auto symtabItr = sectionMap->find(".symtab");
@@ -154,10 +151,6 @@ static bool _create(FILE *fp, ElfImageData *data,
       ElfSection *strtab = strtabItr->second;
       symbolTable =
         new ElfSymbolTable(symtab, strtab, rawData, elfType);
-      for (auto symItr : *symbolTable) {
-        ElfSymbol *sym = symItr.second;
-        sym->print(stdout);
-      }
     }
 
     symtabItr = sectionMap->find(".dynsym");
@@ -168,10 +161,6 @@ static bool _create(FILE *fp, ElfImageData *data,
       ElfSection *strtab = strtabItr->second;
       dynSymbolTable =
         new ElfSymbolTable(symtab, strtab, rawData, elfType);
-      for (auto symItr : *symbolTable) {
-        ElfSymbol *sym = symItr.second;
-        sym->print(stdout);
-      }
     }
     data->ehdr = ehdr;
     data->rawData = rawData;
