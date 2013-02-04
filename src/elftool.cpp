@@ -292,15 +292,29 @@ elftype2str(uint16_t type)
   }
 }
 
+static const char*
+type2str(libelfxx::ElfImage::Type type) {
+ switch (type) {
+    case libelfxx::ElfImage::ELF32:      return "ELF32";
+    case libelfxx::ElfImage::ELF64:      return "ELF64";
+    case libelfxx::ElfImage::ELFINVALID: return "ELFNONE";
+    default:                             return "ELF???";
+  }
+}
+
+const char *
+endian2str(uint8_t endian) {
+  switch (endian) {
+    case ELFDATANONE: return "none";
+    case ELFDATA2LSB: return "2's complement, little endian";
+    case ELFDATA2MSB: return "2's complement, big endian";
+    default:          return "Unknown endian!";
+  }
+}
+
 void printFileHeader(libelfxx::ElfImage *image) {
   const uint8_t *ident = image->getIdent();
-  const char *elfTypeStr = "ELF???";
-  switch (image->getElfType()) {
-    case libelfxx::ElfImage::ELF32:      elfTypeStr = "ELF32";      break;
-    case libelfxx::ElfImage::ELF64:      elfTypeStr = "ELF64";      break;
-    case libelfxx::ElfImage::ELFINVALID: elfTypeStr = "ELFNONE"; break;
-    default:                                              break;
-  }
+
   uint8_t endian = ident[EI_DATA];
   uint8_t osabi = ident[EI_OSABI];
   uint8_t abiVersion = ident[EI_ABIVERSION];
@@ -308,13 +322,11 @@ void printFileHeader(libelfxx::ElfImage *image) {
   if (image->getVersion() == EV_CURRENT) {
     currentStr = " (current)";
   }
-  const char *endianStr = "none";
-  switch (endian) {
-    case ELFDATANONE: endianStr = "none";                          break;
-    case ELFDATA2LSB: endianStr = "2's complement, little endian"; break;
-    case ELFDATA2MSB: endianStr = "2's complement, big endian";    break;
-    default:          endianStr = "Unknown endian!";               break;
-  }
+  const char *endianStr = endian2str(endian);
+  const char *typeStr = type2str(image->getElfType());
+  const char *elftypeStr = elftype2str(image->getType());
+  const char *osabiStr = osabi2str(osabi);
+  const char *machineStr = machine2str(image->getMachine());
 
   printf("ELF Header:\n");
   printf("  Magic:   ");
@@ -322,18 +334,19 @@ void printFileHeader(libelfxx::ElfImage *image) {
     printf("%02x ", ident[i]);
   }
   printf("\n");
-  printf("  Class:                             %s\n", elfTypeStr);
+  printf("  Class:                             %s\n",
+         typeStr);
   printf("  Data:                              %s\n", endianStr);
   printf("  Version:                           %" PRIu8 "%s\n",
          image->getVersion(), currentStr);
   printf("  OS/ABI:                            %s\n",
-         osabi2str(osabi));
+         osabiStr);
   printf("  ABI Version:                       %" PRIu8 "\n",
          abiVersion);
   printf("  Type:                              %s\n",
-         elftype2str(image->getType()));
+         elftypeStr);
   printf("  Machine:                           %s\n",
-         machine2str(image->getMachine()));
+         machineStr);
   printf("  Version:                           0x%" PRIx32 "\n",
          image->getVersion());
   printf("  Entry point address:               0x%" PRIx64 "\n",
