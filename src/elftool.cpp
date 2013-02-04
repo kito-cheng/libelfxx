@@ -371,6 +371,47 @@ void printFileHeader(libelfxx::ElfImage *image) {
          image->getShstrndx());
 }
 
+static void
+printProgramHeaders(libelfxx::ElfImage *image){
+  const char *elftypeStr = elftype2str(image->getType());
+  printf("Elf file type is %s\n", elftypeStr);
+}
+
+typedef void (*OptionHandler)(libelfxx::ElfImage*);
+static OptionHandler optionHandler[NUMBER_OF_OPTION] ={
+  [DUMMY]          = nullptr,
+  [ALL]            = nullptr,
+  [FILE_HEADER]    = printFileHeader,
+  [PROGRAM_HEADER] = printProgramHeaders,
+  [SEGMENTS]       = nullptr,
+  [SECTION_HEADER] = nullptr,
+  [SECTIONS]       = nullptr,
+  [SECTION_GROUPS] = nullptr,
+  [SECTION_DETAILS]= nullptr,
+  [HEADERS]        = nullptr,
+  [SYMBOLS]        = nullptr,
+  [SYMS]           = nullptr,
+  [DYN_SYMS]       = nullptr,
+  [NOTES]          = nullptr,
+  [RELOCS]         = nullptr,
+  [UNWIND]         = nullptr,
+  [DYNAMIC]        = nullptr,
+  [VERSION_INFO]   = nullptr,
+  [ARCH_SPECIFIC]  = nullptr,
+  [ARCHIVE_INDEX]  = nullptr,
+  [USE_DYNAMIC]    = nullptr,
+  [HEX_DUMP]       = nullptr,
+  [STRING_DUMP]    = nullptr,
+  [RELOCATED_DUMP] = nullptr,
+  [DEBUG_DUMP]     = nullptr,
+  [DWARF_DEPTH]    = nullptr,
+  [DWARF_START]    = nullptr,
+  [HISTOGRAM]      = nullptr,
+  [WIDE]           = nullptr,
+  [HELP]           = nullptr,
+  [VERSION]        = nullptr,
+};
+
 int main(int argc, char * const *argv) {
   int c;
   while (1) {
@@ -405,12 +446,19 @@ int main(int argc, char * const *argv) {
   if (optionFlags[VERSION]) {
     printf("libelfxx elftool version 0.01\n");
   }
+
+  if (optionFlags[ALL]) {
+    std::fill(optionFlags, optionFlags+NUMBER_OF_OPTION, true);
+  }
+
   for (int i = optind;
        i < argc;
        ++i) {
     libelfxx::ElfImage *image = libelfxx::ElfImage::create(argv[optind]);
-    if (optionFlags[FILE_HEADER]) {
-      printFileHeader(image);
+    for (int optidx = 0;optidx<NUMBER_OF_OPTION;++optidx) {
+      if (optionFlags[optidx] && optionHandler[optidx] != nullptr) {
+        optionHandler[optidx](image);
+      }
     }
   }
 
