@@ -1,7 +1,8 @@
 include config.mak
 include rules.mak
 
-OBJS=ElfImage.o ElfSection.o ElfSymbol.o ElfSymbolTable.o
+OBJS=ElfImage.o ElfSection.o ElfSymbol.o ElfSymbolTable.o \
+     ElfSegment.o ElfProgramHeader.o
 ELFTOOL_OBJS=elftool.o
 LIBELFPP_so=debug/libelf++.so
 LIBELFPP_a=debug/libelf++.a
