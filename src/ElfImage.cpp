@@ -1,6 +1,7 @@
 #include <ElfImage.h>
 #include <ElfSection.h>
 #include <ElfSymbolTable.h>
+#include <ElfProgramHeader.h>
 #include <Debug.h>
 
 #include <stdio.h>
@@ -11,13 +12,23 @@
 
 namespace libelfxx {
 
+static std::string initInterpreter(libelfxx::ElfImage::SectionMap *sectionMap) {
+  auto itr = sectionMap->find(".interp");
+  if (itr != sectionMap->end()) {
+    return std::string(reinterpret_cast<char*>(itr->second->getContent()));
+  } else {
+    return std::string("");
+  }
+}
+
 
 ElfImage::ElfImage(Elf64_Ehdr *ehdr,
                    uint8_t *rawData,
                    Sections *sections,
                    SectionMap *sectionMap,
                    ElfSymbolTable *symbolTable,
-                   ElfSymbolTable *dynSymbolTable)
+                   ElfSymbolTable *dynSymbolTable,
+                   ElfProgramHeader *programHeader)
   : _type(ehdr->e_type)
   , _machine(ehdr->e_machine)
   , _version(ehdr->e_version)
@@ -32,10 +43,12 @@ ElfImage::ElfImage(Elf64_Ehdr *ehdr,
   , _shnum(ehdr->e_shnum)
   , _shstrndx(ehdr->e_shstrndx)
   , _rawData(rawData)
+  , _interpreter(initInterpreter(sectionMap))
   , _sections(sections)
   , _sectionMap(sectionMap)
   , _symbolTable(symbolTable)
   , _dynSymbolTable(dynSymbolTable)
+  , _programHeader(programHeader)
   , _elfType(Type::ELF64)
 {
   std::copy(ehdr->e_ident, ehdr->e_ident+EI_NIDENT, _ident);
@@ -46,7 +59,8 @@ ElfImage::ElfImage(Elf32_Ehdr *ehdr,
                    Sections *sections,
                    SectionMap *sectionMap,
                    ElfSymbolTable *symbolTable,
-                   ElfSymbolTable *dynSymbolTable)
+                   ElfSymbolTable *dynSymbolTable,
+                   ElfProgramHeader *programHeader)
   : _type(ehdr->e_type)
   , _machine(ehdr->e_machine)
   , _version(ehdr->e_version)
@@ -61,10 +75,12 @@ ElfImage::ElfImage(Elf32_Ehdr *ehdr,
   , _shnum(ehdr->e_shnum)
   , _shstrndx(ehdr->e_shstrndx)
   , _rawData(rawData)
+  , _interpreter(initInterpreter(sectionMap))
   , _sections(sections)
   , _sectionMap(sectionMap)
   , _symbolTable(symbolTable)
   , _dynSymbolTable(dynSymbolTable)
+  , _programHeader(programHeader)
   , _elfType(Type::ELF32)
 {
   std::copy(ehdr->e_ident, ehdr->e_ident+EI_NIDENT, _ident);
@@ -103,6 +119,7 @@ struct ElfImageData {
   ElfImage::SectionMap *sectionMap;
   ElfSymbolTable *symbolTable;
   ElfSymbolTable *dynSymbolTable;
+  ElfProgramHeader *programHeader;
 };
 
 
@@ -138,7 +155,7 @@ static bool _create(FILE *fp, ElfImageData *data,
        const char *sectionName = (const char*)(rawData +
                                                shstrtab->sh_offset +
                                                shdr->sh_name);
-       ElfSection *section = new ElfSection(sectionName, shdr);
+       ElfSection *section = new ElfSection(sectionName, shdr, rawData);
        sections->push_back(section);
        sectionMap->insert(std::make_pair(sectionName, section));
     }
@@ -162,12 +179,14 @@ static bool _create(FILE *fp, ElfImageData *data,
       dynSymbolTable =
         new ElfSymbolTable(symtab, strtab, rawData, elfType);
     }
+    ElfProgramHeader *programHeader = new ElfProgramHeader(ehdr, rawData);
     data->ehdr = ehdr;
     data->rawData = rawData;
     data->sections = sections;
     data->sectionMap = sectionMap;
     data->symbolTable = symbolTable;
     data->dynSymbolTable = dynSymbolTable;
+    data->programHeader = programHeader;
     return true;
   } while (0);
   /* Error handling... */
@@ -196,7 +215,8 @@ ElfImage *ElfImage::create(FILE *fp) {
                     Elf32_Ehdr, Elf32_Shdr>(fp, &data, ELF32)){
           return new ElfImage(data.ehdr, data.rawData,
                               data.sections, data.sectionMap,
-                              data.symbolTable, data.dynSymbolTable);
+                              data.symbolTable, data.dynSymbolTable,
+                              data.programHeader);
         }
       }
       break;
@@ -207,7 +227,8 @@ ElfImage *ElfImage::create(FILE *fp) {
                     Elf64_Ehdr, Elf64_Shdr>(fp, &data, ELF64)){
           return new ElfImage(data.ehdr, data.rawData,
                               data.sections, data.sectionMap,
-                              data.symbolTable, data.dynSymbolTable);
+                              data.symbolTable, data.dynSymbolTable,
+                              data.programHeader);
         }
       }
       break;
@@ -276,8 +297,41 @@ uint16_t ElfImage::getShstrndx() const {
   return _shstrndx;
 }
 
+size_t ElfImage::getSectionNum() const {
+  return _shnum;
+}
+
+size_t ElfImage::getSegmentNum() const {
+  return _phnum;
+}
+
+ElfSection *ElfImage::getSection(unsigned idx) {
+  if (idx < _shnum) {
+    return (*_sections)[idx];
+  } else {
+    return nullptr;
+  }
+}
+
+ElfSection *ElfImage::getSection(const char *name) {
+  auto itr = _sectionMap->find(name);
+  if (itr == _sectionMap->end()) {
+    return nullptr;
+  } else {
+    return itr->second;
+  }
+}
+
+ElfProgramHeader *ElfImage::getProgramHeader() {
+  return _programHeader;
+}
+
 ElfImage::Type ElfImage::getElfType() const {
   return _elfType;
+}
+
+const std::string &ElfImage::getInterpreter() const {
+  return _interpreter;
 }
 
 };

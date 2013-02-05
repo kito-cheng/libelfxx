@@ -9,8 +9,8 @@ namespace libelfxx {
 
 class ElfSection {
   public:
-    ElfSection(const char *name, Elf32_Shdr *shdr);
-    ElfSection(const char *name, Elf64_Shdr *shdr);
+    ElfSection(const char *name, Elf32_Shdr *shdr, uint8_t *rawData);
+    ElfSection(const char *name, Elf64_Shdr *shdr, uint8_t *rawData);
 
     const char *getNameStr() const;
     uint32_t getName() const;
@@ -22,6 +22,8 @@ class ElfSection {
     uint32_t getInfo() const;
     uint64_t getAddralign() const;
     uint64_t getEntsize() const;
+
+    uint8_t *getContent();
 
     void print(FILE *fp);
   private:
@@ -35,6 +37,8 @@ class ElfSection {
     uint32_t _info;
     uint64_t _addralign;
     uint64_t _entsize;
+
+    uint8_t *_content;
 };
 
 };

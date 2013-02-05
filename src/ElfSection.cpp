@@ -4,9 +4,20 @@
 #include <stdio.h>
 #include <inttypes.h>
 
+#include <algorithm>
+
 namespace libelfxx {
 
-ElfSection::ElfSection(const char *name, Elf32_Shdr *shdr)
+template <class Elf_Shdr>
+static uint8_t *initContent(Elf_Shdr *shdr, uint8_t *rawData) {
+  uint8_t *content = new uint8_t[shdr->sh_size];
+  uint8_t *begin = rawData + shdr->sh_offset;
+  uint8_t *end = begin + shdr->sh_size;
+  std::copy(begin, end, content);
+  return content;
+}
+
+ElfSection::ElfSection(const char *name, Elf32_Shdr *shdr, uint8_t *rawData)
   : _nameStr(name)
   , _name(shdr->sh_name)
   , _flags(shdr->sh_flags)
@@ -17,10 +28,11 @@ ElfSection::ElfSection(const char *name, Elf32_Shdr *shdr)
   , _info(shdr->sh_info)
   , _addralign(shdr->sh_addralign)
   , _entsize(shdr->sh_entsize)
+  , _content(initContent(shdr, rawData))
 {
 }
 
-ElfSection::ElfSection(const char *name, Elf64_Shdr *shdr)
+ElfSection::ElfSection(const char *name, Elf64_Shdr *shdr, uint8_t *rawData)
   : _nameStr(name)
   , _name(shdr->sh_name)
   , _flags(shdr->sh_flags)
@@ -31,6 +43,7 @@ ElfSection::ElfSection(const char *name, Elf64_Shdr *shdr)
   , _info(shdr->sh_info)
   , _addralign(shdr->sh_addralign)
   , _entsize(shdr->sh_entsize)
+  , _content(initContent(shdr, rawData))
 {
 }
 
@@ -55,6 +68,10 @@ void ElfSection::print(FILE *fp) {
        _info,
        _addralign,
        _entsize);
+}
+
+uint8_t *ElfSection::getContent() {
+  return _content;
 }
 
 const char *ElfSection::getNameStr() const {

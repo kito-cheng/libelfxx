@@ -13,6 +13,7 @@ namespace libelfxx {
 
 class ElfSection;
 class ElfSymbolTable;
+class ElfProgramHeader;
 
 class ElfImage {
   public:
@@ -52,7 +53,14 @@ class ElfImage {
     uint16_t getShnum() const;
     uint16_t getShstrndx() const;
 
+    size_t getSegmentNum() const;
+    size_t getSectionNum() const;
+    ElfSection *getSection(unsigned idx);
+    ElfSection *getSection(const char *name);
+    ElfProgramHeader *getProgramHeader();
     Type getElfType() const;
+
+    const std::string &getInterpreter() const;
 
   private:
     ElfImage(Elf64_Ehdr *ehdr,
@@ -60,13 +68,15 @@ class ElfImage {
              Sections *sections,
              SectionMap *sectionMap,
              ElfSymbolTable *symbolTable,
-             ElfSymbolTable *dynSymbolTable);
+             ElfSymbolTable *dynSymbolTable,
+             ElfProgramHeader *programHeader);
     ElfImage(Elf32_Ehdr *ehdr,
              uint8_t *rawData,
              Sections *sections,
              SectionMap *sectionMap,
              ElfSymbolTable *symbolTable,
-             ElfSymbolTable *dynSymbolTable);
+             ElfSymbolTable *dynSymbolTable,
+             ElfProgramHeader *programHeader);
     ~ElfImage();
     uint8_t _ident[EI_NIDENT];
     uint16_t _type;
@@ -84,10 +94,13 @@ class ElfImage {
     uint16_t _shstrndx;
     uint8_t *_rawData;
 
+    std::string _interpreter;
+
     Sections *_sections;
     SectionMap *_sectionMap;
     ElfSymbolTable *_symbolTable;
     ElfSymbolTable *_dynSymbolTable;
+    ElfProgramHeader *_programHeader;
     Type _elfType;
 };
 
