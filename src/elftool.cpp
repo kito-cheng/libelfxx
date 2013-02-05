@@ -4,6 +4,9 @@
 #include <getopt.h>
 
 #include <ElfImage.h>
+#include <ElfProgramHeader.h>
+#include <ElfSegment.h>
+#include <ElfSection.h>
 #include <Debug.h>
 
 enum Option {
@@ -312,6 +315,31 @@ endian2str(uint8_t endian) {
   }
 }
 
+static const char *
+phdrType2str(uint32_t phdrType) {
+  switch (phdrType) {
+    case PT_NULL:         return "NULL";
+    case PT_LOAD:         return "LOAD";
+    case PT_DYNAMIC:      return "DYNAMIC";
+    case PT_INTERP:       return "INTERP";
+    case PT_NOTE:         return "NOTE";
+    case PT_SHLIB:        return "SHLIB";
+    case PT_PHDR:         return "PHDR";
+    case PT_TLS:          return "TLS";
+    case PT_GNU_EH_FRAME: return "GNU_EH_FRAME";
+    case PT_GNU_STACK:    return "GNU_STACK";
+    case PT_GNU_RELRO:    return "GNU_RELRO";
+    default:
+      if (phdrType >= PT_LOPROC && phdrType <= PT_HIPROC){
+        return "PROC";
+      } else if (phdrType >= PT_LOOS && phdrType <= PT_HIOS) {
+        return "OS";
+      } else {
+        return "UNKNOWN";
+      }
+  }
+}
+
 void printFileHeader(libelfxx::ElfImage *image) {
   const uint8_t *ident = image->getIdent();
 
@@ -374,7 +402,97 @@ void printFileHeader(libelfxx::ElfImage *image) {
 static void
 printProgramHeaders(libelfxx::ElfImage *image){
   const char *elftypeStr = elftype2str(image->getType());
+  libelfxx::ElfProgramHeader *programHeader = image->getProgramHeader();
+  printf("\n");
   printf("Elf file type is %s\n", elftypeStr);
+  printf("Entry point 0x%" PRIx64 "\n", image->getEntry());
+  printf("There are %" PRId16 " program headers, starting at "
+         "offset %" PRIu64 "\n",
+         image->getPhnum(),
+         image->getPhoff());
+  printf("\nProgram Headers:\n");
+  switch (image->getElfType()) {
+    case libelfxx::ElfImage::ELF32:
+       {
+          printf("  Type           Offset   VirtAddr   PhysAddr   "
+                 "FileSiz MemSiz  Flg Align\n");
+       }
+       break;
+    case libelfxx::ElfImage::ELF64:
+       {
+          printf("  Type           Offset             VirtAddr"
+                 "           PhysAddr\n"
+                 "                 FileSiz            MemSiz"
+                 "              Flags  Align\n");
+       }
+       break;
+    default:
+       FATAL("Unknown Elf Type!\n");
+  }
+
+  for (auto *segment : *programHeader) {
+    uint64_t offset = segment->getOffset();
+    uint64_t vaddr = segment->getVaddr();
+    uint64_t paddr = segment->getPaddr();
+    uint32_t filesz = segment->getFilesz();
+    uint32_t memsz = segment->getMemsz();
+    uint32_t flags = segment->getFlags();
+    uint32_t align = segment->getAlign();
+    const char *phdrType = phdrType2str(segment->getType());
+    switch (image->getElfType()) {
+      case libelfxx::ElfImage::ELF32:
+         {
+            printf("  %-14.14s 0x%6.6" PRIx64 " 0x%8.8" PRIx64
+                   " 0x%8.8" PRIx64 " 0x%5.5" PRIx32 " 0x%5.5" PRIx32
+                   " %c%c%c %#" PRIx32 "\n",
+                   phdrType, offset, vaddr, paddr, filesz, memsz,
+                   flags & PF_R ? 'R' : ' ',
+                   flags & PF_W ? 'W' : ' ',
+                   flags & PF_X ? 'E' : ' ',
+                   align);
+         }
+         break;
+      case libelfxx::ElfImage::ELF64:
+         {
+            printf("  %-14.14s 0x%16.16" PRIx64 " 0x%16.16" PRIx64
+                   " 0x%16.16" PRIx64 " 0x%16.16" PRIx32 " 0x%16.16" PRIx32
+                   " %c%c%c %#" PRIx32 "\n",
+                   phdrType, offset, vaddr, paddr, filesz, memsz,
+                   flags & PF_R ? 'R' : ' ',
+                   flags & PF_W ? 'W' : ' ',
+                   flags & PF_X ? 'E' : ' ',
+                   align);
+         }
+         break;
+      default:
+         FATAL("Unknown Elf Type!\n");
+    }
+    if (segment->getType() == PT_INTERP) {
+      printf("      [Requesting program interpreter: %s]\n",
+             image->getInterpreter().c_str());
+    }
+  }
+  printf("\n");
+  printf(" Section to Segment mapping:\n");
+  printf("  Segment Sections...\n");
+  for (unsigned i = 0;
+       i<programHeader->getSegmentNum();
+       ++i) {
+    libelfxx::ElfSegment *segment = programHeader->getSegment(i);
+    printf("   %2.2u     ", i);
+    uint64_t beginAddr = segment->getPaddr();
+    uint64_t endAddr =  beginAddr + segment->getMemsz();
+    for (unsigned j = 1; /* Skip NULL section */
+         j<image->getSectionNum();
+         ++j) {
+      libelfxx::ElfSection *section = image->getSection(j);
+      uint64_t addr = section->getAddr();
+      if (addr >= beginAddr && addr < endAddr) {
+        printf("%s ", section->getNameStr());
+      }
+    }
+    printf("\n");
+  }
 }
 
 typedef void (*OptionHandler)(libelfxx::ElfImage*);
