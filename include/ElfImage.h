@@ -22,6 +22,12 @@ class ElfImage {
       ELF32,
       ELF64,
     };
+    enum Endian {
+      ELF_NONE_ENDIAN,
+      ELF_LITTLE_ENDIAN,
+      ELF_BIG_ENDIAN,
+      ELF_UNKNOWN_ENDIAN,
+    };
     typedef std::vector<ElfSection*> Sections;
     typedef std::map<std::string, ElfSection*> SectionMap;
     typedef Sections::iterator iterator;
@@ -62,6 +68,10 @@ class ElfImage {
     Type getElfType() const;
 
     const std::string &getInterpreter() const;
+
+    Endian getEndian() const;
+    bool isLittleEndian() const;
+    bool isBigEndian() const;
 
   private:
     ElfImage(Elf64_Ehdr *ehdr,

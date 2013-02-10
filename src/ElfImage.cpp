@@ -426,4 +426,21 @@ const char* ElfImage::getMachineString() const {
   return machine2str(_machine);
 }
 
+ElfImage::Endian ElfImage::getEndian() const {
+  switch (_ident[EI_DATA]) {
+    case ELFDATANONE: return ELF_NONE_ENDIAN;
+    case ELFDATA2LSB: return ELF_LITTLE_ENDIAN;
+    case ELFDATA2MSB: return ELF_BIG_ENDIAN;
+    default:          return ELF_UNKNOWN_ENDIAN;
+  }
+}
+
+bool ElfImage::isLittleEndian() const {
+  return _ident[EI_DATA] == ELF_LITTLE_ENDIAN;
+}
+
+bool ElfImage::isBigEndian() const {
+  return _ident[EI_DATA] == ELF_LITTLE_ENDIAN;
+}
+
 };
