@@ -40,6 +40,7 @@ class ElfImage {
 
     const uint8_t *getIdent() const;
     uint16_t getType() const;
+    const char *getMachineString() const;
     uint16_t getMachine() const;
     uint32_t getVersion() const;
     uint64_t getEntry() const;

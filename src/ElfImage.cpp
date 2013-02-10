@@ -341,4 +341,89 @@ bool ElfImage::isElf64() const {
   return _elfType == ELF64;
 }
 
+static const char *
+machine2str(uint16_t mach)
+{
+  switch (mach) {
+    case EM_NONE:        return "Unknown machine";
+    case EM_M32:         return "AT&T WE32100";
+    case EM_SPARC:       return "Sun SPARC";
+    case EM_386:         return "Intel 80386";
+    case EM_68K:         return "Motorola 68000";
+    case EM_88K:         return "Motorola 88000";
+    case EM_860:         return "Intel i860";
+    case EM_MIPS:        return "MIPS R3000 Big-Endian only";
+    case EM_S370:        return "IBM System/370";
+    case EM_MIPS_RS3_LE: return "MIPS R3000 Little-Endian";
+    case EM_PARISC:      return "HP PA-RISC";
+    case EM_VPP500:      return "Fujitsu VPP500";
+    case EM_SPARC32PLUS: return "SPARC v8plus";
+    case EM_960:         return "Intel 80960";
+    case EM_PPC:         return "PowerPC 32-bit";
+    case EM_PPC64:       return "PowerPC 64-bit";
+    case EM_S390:        return "IBM System/390";
+    case EM_V800:        return "NEC V800";
+    case EM_FR20:        return "Fujitsu FR20";
+    case EM_RH32:        return "TRW RH-32";
+    case EM_RCE:         return "Motorola RCE";
+    case EM_ARM:         return "ARM";
+    case EM_SH:          return "Hitachi SH";
+    case EM_SPARCV9:     return "SPARC v9 64-bit";
+    case EM_TRICORE:     return "Siemens TriCore embedded processor";
+    case EM_ARC:         return "Argonaut RISC Core";
+    case EM_H8_300:      return "Hitachi H8/300";
+    case EM_H8_300H:     return "Hitachi H8/300H";
+    case EM_H8S:         return "Hitachi H8S";
+    case EM_H8_500:      return "Hitachi H8/500";
+    case EM_IA_64:       return "Intel IA-64 Processor";
+    case EM_MIPS_X:      return "Stanford MIPS-X";
+    case EM_COLDFIRE:    return "Motorola ColdFire";
+    case EM_68HC12:      return "Motorola M68HC12";
+    case EM_MMA:         return "Fujitsu MMA";
+    case EM_PCP:         return "Siemens PCP";
+    case EM_NCPU:        return "Sony nCPU";
+    case EM_NDR1:        return "Denso NDR1 microprocessor";
+    case EM_STARCORE:    return "Motorola Star*Core processor";
+    case EM_ME16:        return "Toyota ME16 processor";
+    case EM_ST100:       return "STMicroelectronics ST100 processor";
+    case EM_TINYJ:       return "Advanced Logic Corp. TinyJ processor";
+    case EM_X86_64:      return "Advanced Micro Devices x86-64";
+    case EM_PDSP:        return "Sony DSP Processor";
+    case EM_FX66:        return "Siemens FX66 microcontroller";
+    case EM_ST9PLUS:     return "STMicroelectronics ST9+ 8/16 microcontroller";
+    case EM_ST7:         return "STmicroelectronics ST7 8-bit microcontroller";
+    case EM_68HC16:      return "Motorola MC68HC16 microcontroller";
+    case EM_68HC11:      return "Motorola MC68HC11 microcontroller";
+    case EM_68HC08:      return "Motorola MC68HC08 microcontroller";
+    case EM_68HC05:      return "Motorola MC68HC05 microcontroller";
+    case EM_SVX:         return "Silicon Graphics SVx";
+    case EM_ST19:        return "STMicroelectronics ST19 8-bit mc";
+    case EM_VAX:         return "Digital VAX";
+    case EM_CRIS:        return "Axis Communications 32-bit embedded processor";
+    case EM_JAVELIN:     return "Infineon Tech. 32bit embedded processor";
+    case EM_FIREPATH:    return "Element 14 64-bit DSP Processor";
+    case EM_ZSP:         return "LSI Logic 16-bit DSP Processor";
+    case EM_MMIX:        return "Donald Knuth's educational 64-bit proc";
+    case EM_HUANY:       return "Harvard University MI object files";
+    case EM_PRISM:       return "SiTera Prism";
+    case EM_AVR:         return "Atmel AVR 8-bit microcontroller";
+    case EM_FR30:        return "Fujitsu FR30";
+    case EM_D10V:        return "Mitsubishi D10V";
+    case EM_D30V:        return "Mitsubishi D30V";
+    case EM_V850:        return "NEC v850";
+    case EM_M32R:        return "Mitsubishi M32R";
+    case EM_MN10300:     return "Matsushita MN10300";
+    case EM_MN10200:     return "Matsushita MN10200";
+    case EM_PJ:          return "picoJava";
+    case EM_OPENRISC:    return "OpenRISC 32-bit embedded processor";
+    case EM_ARC_A5:      return "ARC Cores Tangent-A5";
+    case EM_XTENSA:      return "Tensilica Xtensa Architecture";
+    default:             return "Unknown Machine!";
+  }
+}
+
+const char* ElfImage::getMachineString() const {
+  return machine2str(_machine);
+}
+
 };
