@@ -334,4 +334,11 @@ const std::string &ElfImage::getInterpreter() const {
   return _interpreter;
 }
 
+bool ElfImage::isElf32() const {
+  return _elfType == ELF32;
+}
+bool ElfImage::isElf64() const {
+  return _elfType == ELF64;
+}
+
 };
