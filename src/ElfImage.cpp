@@ -443,4 +443,20 @@ bool ElfImage::isBigEndian() const {
   return _ident[EI_DATA] == ELF_LITTLE_ENDIAN;
 }
 
+ElfImage::iterator ElfImage::begin() {
+  return _sections->begin();
+}
+
+ElfImage::iterator ElfImage::end() {
+  return _sections->end();
+}
+
+ElfImage::const_iterator ElfImage::begin() const {
+  return (const_iterator)_sections->begin();
+}
+
+ElfImage::const_iterator ElfImage::end() const {
+  return (const_iterator)_sections->end();
+}
+
 };
