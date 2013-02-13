@@ -23,5 +23,8 @@ clean:
 	rm debug/ -rf
 	rm release/ -rf
 
+doxygen:
+	doxygen docs/doxyfile.cfg
+
 -include $(wildcard debug/*.d)
 -include $(wildcard release/*.d)
