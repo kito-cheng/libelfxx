@@ -1,3 +1,7 @@
                       libelf++
 
 It's a simple elf reader library writen in c++!
+
+And libelf++ distibute with Apache License 2.0
+
+http://www.apache.org/licenses/LICENSE-2.0
