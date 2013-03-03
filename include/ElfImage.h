@@ -59,6 +59,8 @@ class ElfImage {
     iterator end();
     const_iterator begin() const;
     const_iterator end() const;
+    const_iterator cbegin() const;
+    const_iterator cend() const;
 
     const uint8_t *getIdent() const;
     uint16_t getType() const;

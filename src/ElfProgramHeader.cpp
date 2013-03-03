@@ -72,4 +72,12 @@ ElfProgramHeader::const_iterator ElfProgramHeader::end() const {
   return _segments.end();
 }
 
+ElfProgramHeader::const_iterator ElfProgramHeader::cbegin() const {
+  return _segments.begin();
+}
+
+ElfProgramHeader::const_iterator ElfProgramHeader::cend() const {
+  return _segments.end();
+}
+
 };

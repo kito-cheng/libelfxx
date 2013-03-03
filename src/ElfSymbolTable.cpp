@@ -64,4 +64,12 @@ ElfSymbolTable::const_iterator ElfSymbolTable::end() const {
   return _symtab.end();
 }
 
+ElfSymbolTable::const_iterator ElfSymbolTable::cbegin() const {
+  return _symtab.begin();
+}
+
+ElfSymbolTable::const_iterator ElfSymbolTable::cend() const {
+  return _symtab.end();
+}
+
 };

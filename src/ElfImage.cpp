@@ -475,4 +475,12 @@ ElfImage::const_iterator ElfImage::end() const {
   return (const_iterator)_sections->end();
 }
 
+ElfImage::const_iterator ElfImage::cbegin() const {
+  return (const_iterator)_sections->begin();
+}
+
+ElfImage::const_iterator ElfImage::cend() const {
+  return (const_iterator)_sections->end();
+}
+
 };

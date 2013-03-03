@@ -39,6 +39,8 @@ class ElfProgramHeader {
     iterator end();
     const_iterator begin() const;
     const_iterator end() const;
+    const_iterator cbegin() const;
+    const_iterator cend() const;
 
     size_t getSegmentNum() const;
     ElfSegment *getSegment(unsigned i);
