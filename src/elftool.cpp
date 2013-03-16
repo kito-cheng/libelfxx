@@ -430,6 +430,25 @@ printProgramHeaders(libelfxx::ElfImage *image){
   }
 }
 
+static void
+printSectionHeaders(libelfxx::ElfImage *image) {
+  printf("There are %zu section headers, starting at offset 0x" PRIx64 ":\n\n",
+         image->getSectionNum(), image->getPhoff());
+  printf("Section Headers:\n");
+  printf("  [Nr] Name              Type            Addr     Off    Size"
+         "   ES Flg Lk Inf Al\n");
+  unsigned i = 0;
+  for (auto section : *image) {
+    printf("  [%2u] %s\n", i++, section->getNameStr());
+  }
+  printf("Key to Flags:\n"
+         "  W (write), A (alloc), X (execute), M (merge), S (strings)\n"
+         "  I (info), L (link order), G (group), T (TLS), E (exclude),"
+         " x (unknown)\n"
+         "  O (extra OS processing required) o (OS specific),"
+         " p (processor specific)\n");
+}
+
 typedef void (*OptionHandler)(libelfxx::ElfImage*);
 static OptionHandler optionHandler[NUMBER_OF_OPTION] ={
   [DUMMY]          = nullptr,
@@ -437,7 +456,7 @@ static OptionHandler optionHandler[NUMBER_OF_OPTION] ={
   [FILE_HEADER]    = printFileHeader,
   [PROGRAM_HEADER] = printProgramHeaders,
   [SEGMENTS]       = printProgramHeaders,
-  [SECTION_HEADER] = nullptr,
+  [SECTION_HEADER] = printSectionHeaders,
   [SECTIONS]       = nullptr,
   [SECTION_GROUPS] = nullptr,
   [SECTION_DETAILS]= nullptr,
