@@ -64,26 +64,26 @@ ElfSection::ElfSection(const char *name, Elf64_Shdr *shdr, uint8_t *rawData)
 }
 
 void ElfSection::print(FILE *fp) {
-  PRINT("Section `%s`:\n"
-        "  sh_name : %" PRIu32 "\n"
-        "  sh_flags : 0x%" PRIx64 "\n"
-        "  sh_addr : 0x%" PRIx64 "\n"
-        "  sh_offset : 0x%" PRIx64 "\n"
-        "  sh_size : 0x%" PRIu64 "\n"
-        "  sh_link : %" PRIu32 "\n"
-        "  sh_info : 0x%" PRIx32 "\n"
-        "  sh_addralign : %" PRIu64 "\n"
-        "  sh_entsize : %" PRIu64 "\n",
-        _nameStr,
-       _name,
-       _flags,
-       _addr,
-       _offset,
-       _size,
-       _link,
-       _info,
-       _addralign,
-       _entsize);
+  fprintf(fp, "Section `%s`:\n"
+              "  sh_name : %" PRIu32 "\n"
+              "  sh_flags : 0x%" PRIx64 "\n"
+              "  sh_addr : 0x%" PRIx64 "\n"
+              "  sh_offset : 0x%" PRIx64 "\n"
+              "  sh_size : 0x%" PRIu64 "\n"
+              "  sh_link : %" PRIu32 "\n"
+              "  sh_info : 0x%" PRIx32 "\n"
+              "  sh_addralign : %" PRIu64 "\n"
+              "  sh_entsize : %" PRIu64 "\n",
+              _nameStr,
+              _name,
+              _flags,
+              _addr,
+              _offset,
+              _size,
+              _link,
+              _info,
+              _addralign,
+              _entsize);
 }
 
 uint8_t *ElfSection::getContent() {
