@@ -28,7 +28,7 @@ endef
 CXX=$(call get_cxx)
 CXX11STDFLAG=$(call get_cxx_standard)
 DEBUG_CXXFLAGS=-MMD -MP -MT $@ -MF debug/$(*F).d -g3 -O0
-RELEASE_CXXFLAGS=-MMD -MP -MT $@ -MF release/$(*F).d -O2
+RELEASE_CXXFLAGS=-MMD -MP -MT $@ -MF release/$(*F).d -O2 -DNDEBUG
 AR=ar
 AR_FLAGS=rcs
 CXXFLAGS=-Wall -fPIC -I include $(CXX11STDFLAG) -D__STDC_FORMAT_MACROS -Wextra
