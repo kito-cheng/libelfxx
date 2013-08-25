@@ -17,9 +17,16 @@
 #ifndef _LIBELFXX_DEBUG_H_
 #define _LIBELFXX_DEBUG_H_
 
+#ifdef NDEBUG
+#define ERROR(arg...) fprintf(stderr, arg)
+#define DEBUG(arg...) ((void)(0))
+#define PRINT(arg...) fprintf(stdout, arg)
+#define FATAL(arg...) fprintf(stderr, arg), exit(1)
+#else /* !NDEBUG */
 #define ERROR(arg...) fprintf(stderr, arg)
 #define DEBUG(arg...) fprintf(stderr, arg)
 #define PRINT(arg...) fprintf(stdout, arg)
 #define FATAL(arg...) fprintf(stderr, arg), exit(1)
+#endif /* NDEBUG */
 
 #endif
