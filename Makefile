@@ -13,6 +13,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+ifeq ($(BUILD_TYPE),)
+  BUILD_TYPE=debug
+endif
 
 include config.mak
 include rules.mak
@@ -20,19 +23,20 @@ include rules.mak
 OBJS=ElfImage.o ElfSection.o ElfSymbol.o ElfSymbolTable.o \
      ElfSegment.o ElfProgramHeader.o
 ELFTOOL_OBJS=elftool.o
-LIBELFPP_so=debug/libelf++.so
-LIBELFPP_a=debug/libelf++.a
-ELFTOOL=debug/elftool
+BUILD_DIR=$(BUILD_TYPE)
+LIBELFPP_so=$(BUILD_DIR)/libelf++.so
+LIBELFPP_a=$(BUILD_DIR)/libelf++.a
+ELFTOOL=$(BUILD_DIR)/elftool
 
-all: $(LIBELFPP_so) $(ELFTOOL)
+all: $(LIBELFPP_so) $(LIBELFPP_a)
 
-$(LIBELFPP_so): $(addprefix debug/,$(OBJS))
+$(LIBELFPP_so): $(addprefix $(BUILD_DIR)/,$(OBJS))
 	$(call LINK_SO,$^)
 
-$(LIBELFPP_a): $(addprefix debug/,$(OBJS))
+$(LIBELFPP_a): $(addprefix $(BUILD_DIR)/,$(OBJS))
 	$(call LINK_AR,$^)
 
-$(ELFTOOL): $(addprefix debug/,$(ELFTOOL_OBJS)) $(LIBELFPP_a)
+$(ELFTOOL): $(addprefix $(BUILD_DIR)/,$(ELFTOOL_OBJS)) $(LIBELFPP_a)
 	$(call LINK_EXE,$^)
 
 clean:
