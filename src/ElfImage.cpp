@@ -102,6 +102,14 @@ ElfImage::ElfImage(Elf32_Ehdr *ehdr,
   std::copy(ehdr->e_ident, ehdr->e_ident+EI_NIDENT, _ident);
 }
 
+ElfImage::~ElfImage() {
+  delete []_rawData;
+  delete _sections;
+  delete _sectionMap;
+  delete _symbolTable;
+  delete _dynSymbolTable;
+  delete _programHeader;
+}
 
 ElfImage *ElfImage::create(const char *path) {
   FILE *fp = fopen(path, "rb");

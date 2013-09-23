@@ -33,6 +33,7 @@ class ElfProgramHeader;
 
 class ElfImage {
   public:
+    ~ElfImage();
     enum Type {
       ELFINVALID,
       ELF32,
@@ -106,7 +107,6 @@ class ElfImage {
              ElfSymbolTable *symbolTable,
              ElfSymbolTable *dynSymbolTable,
              ElfProgramHeader *programHeader);
-    ~ElfImage();
     uint8_t _ident[EI_NIDENT];
     uint16_t _type;
     uint16_t _machine;
