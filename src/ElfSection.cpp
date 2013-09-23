@@ -29,7 +29,11 @@ static uint8_t *initContent(Elf_Shdr *shdr, uint8_t *rawData) {
   uint8_t *content = new uint8_t[shdr->sh_size];
   uint8_t *begin = rawData + shdr->sh_offset;
   uint8_t *end = begin + shdr->sh_size;
-  std::copy(begin, end, content);
+  if (!(shdr->sh_type & SHT_NOBITS)) {
+    std::copy(begin, end, content);
+  } else {
+    std::fill(content, content+shdr->sh_size, 0);
+  }
   return content;
 }
 
