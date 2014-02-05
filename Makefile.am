@@ -1,3 +1,10 @@
 ACLOCAL_AMFLAGS = -I m4
 SUBDIRS = src
-include_HEADERS=include/ElfProgramHeader.h include/ElfSegment.h include/ElfSymbolTable.h include/ElfImage.h include/ElfSection.h include/ElfSymbol.h
+include_HEADERS=include/libelf++.h
+include_libelf__dir = $(includedir)/libelf++
+include_libelf___HEADERS=include/libelf++/ElfProgramHeader.h \
+                         include/libelf++/ElfSegment.h \
+                         include/libelf++/ElfSymbolTable.h \
+                         include/libelf++/ElfImage.h \
+                         include/libelf++/ElfSection.h \
+                         include/libelf++/ElfSymbol.h
