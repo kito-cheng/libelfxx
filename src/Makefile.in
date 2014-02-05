@@ -123,7 +123,7 @@ am__installdirs = "$(DESTDIR)$(libdir)"
 LTLIBRARIES = $(lib_LTLIBRARIES)
 libelf___la_LIBADD =
 am_libelf___la_OBJECTS = ElfImage.lo ElfSection.lo ElfSymbol.lo \
-	ElfProgramHeader.lo ElfSegment.lo ElfSymbolTable.lo
+	ElfProgramHeader.lo ElfSegment.lo ElfSymbolTable.lo Debug.lo
 libelf___la_OBJECTS = $(am_libelf___la_OBJECTS)
 AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
@@ -311,7 +311,15 @@ top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 ACLOCAL_AMFLAGS = -I $(top_srcdir)/m4
 lib_LTLIBRARIES = libelf++.la
-libelf___la_SOURCES = ElfImage.cpp ElfSection.cpp ElfSymbol.cpp ElfProgramHeader.cpp ElfSegment.cpp ElfSymbolTable.cpp
+libelf___la_SOURCES = \
+  ElfImage.cpp \
+  ElfSection.cpp \
+  ElfSymbol.cpp \
+  ElfProgramHeader.cpp \
+  ElfSegment.cpp \
+  ElfSymbolTable.cpp \
+  Debug.cpp
+
 AM_CPPFLAGS = -I$(top_srcdir)/include \
               -I$(top_srcdir)/include/libelf++ \
               -D__STDC_FORMAT_MACROS \
@@ -396,6 +404,7 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Debug.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ElfImage.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ElfProgramHeader.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ElfSection.Plo@am__quote@

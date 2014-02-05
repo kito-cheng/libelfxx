@@ -42,7 +42,7 @@ ElfSymbolTable::ElfSymbolTable(ElfSection *symtab,
                            Elf64_Word>(symtab, strtab, rawData);
       break;
     default:
-      ERROR("OMG, what's the hell?");
+      error("OMG, what's the hell?");
       abort();
       break;
   }

@@ -113,13 +113,13 @@ ElfImage::~ElfImage() {
 
 ElfImage *ElfImage::create(const char *path) {
   FILE *fp = fopen(path, "rb");
-  DEBUG("Open file `%s`...\n", path);
+  debug("Open file `%s`...\n", path);
   if (fp) {
     ElfImage *image = create(fp);
     fclose(fp);
     return image;
   } else {
-    ERROR("Fail to open file %s\n", path);
+    error("Fail to open file %s\n", path);
     return nullptr;
   }
 }
@@ -161,12 +161,12 @@ static bool _create(FILE *fp, ElfImageData *data,
   rawData = new uint8_t[filesize];
   do {
     if(fread(rawData, filesize, 1, fp) < 1) {
-      ERROR("Read data fail!\n");
+      error("Read data fail!\n");
       break;
     }
     Elf_Ehdr *ehdr = reinterpret_cast<Elf_Ehdr*>(rawData);
     if (ehdr->e_shstrndx == SHN_XINDEX) {
-      ERROR("Section string table not found!\n");
+      error("Section string table not found!\n");
       break;
     }
     Elf_Shdr *shdrs = reinterpret_cast<Elf_Shdr*>(rawData + ehdr->e_shoff);
@@ -227,7 +227,7 @@ ElfImage *ElfImage::create(FILE *fp) {
   fread(&elfIdent, EI_NIDENT, 1, fp);
 
   if (!elfValid(elfIdent)) {
-    ERROR("Input file is not valid elf file!\n");
+    error("Input file is not valid elf file!\n");
     return nullptr;
   }
 
@@ -258,7 +258,7 @@ ElfImage *ElfImage::create(FILE *fp) {
       break;
     case 0: /* Invalid elf type? */
     default:
-      ERROR("Invalid ELFCLASS! type = %x\n", elfIdent[EI_CLASS]);
+      error("Invalid ELFCLASS! type = %x\n", elfIdent[EI_CLASS]);
       break;
   }
   return nullptr;

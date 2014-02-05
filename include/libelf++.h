@@ -16,4 +16,16 @@
 
 #ifndef _LIBELF_PP_H_
 #define _LIBELF_PP_H_
+
+#include<libelf++/ElfImage.h>
+#include<libelf++/ElfProgramHeader.h>
+#include<libelf++/ElfSection.h>
+#include<libelf++/ElfSegment.h>
+#include<libelf++/ElfSymbol.h>
+#include<libelf++/ElfSymbolTable.h>
+
+namespace libelfxx {
+  void setDebug(bool);
+};
+
 #endif /* _LIBELF_PP_H_ */

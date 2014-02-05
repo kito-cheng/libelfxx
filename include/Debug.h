@@ -17,16 +17,14 @@
 #ifndef _LIBELFXX_DEBUG_H_
 #define _LIBELFXX_DEBUG_H_
 
-#ifdef NDEBUG
-#define ERROR(arg...) fprintf(stderr, arg)
-#define DEBUG(arg...) ((void)(0))
-#define PRINT(arg...) fprintf(stdout, arg)
-#define FATAL(arg...) fprintf(stderr, arg), exit(1)
-#else /* !NDEBUG */
-#define ERROR(arg...) fprintf(stderr, arg)
-#define DEBUG(arg...) fprintf(stderr, arg)
-#define PRINT(arg...) fprintf(stdout, arg)
-#define FATAL(arg...) fprintf(stderr, arg), exit(1)
-#endif /* NDEBUG */
+#define HIDDEN __attribute__ ((visibility ("hidden")))
+#define PRINTF_LIKE __attribute__ ((format(printf, 1, 2)))
+#define NORETRUN __attribute__ ((noreturn))
+extern bool libelfxx_debug HIDDEN;
+
+extern void error(const char *fmt, ...) PRINTF_LIKE HIDDEN;
+extern void debug(const char *fmt, ...) PRINTF_LIKE HIDDEN;
+extern void print(const char *fmt, ...) PRINTF_LIKE HIDDEN;
+extern void fatal(const char *fmt, ...) PRINTF_LIKE HIDDEN NORETRUN;
 
 #endif
