@@ -144,4 +144,32 @@ ElfSymbol::Type ElfSymbol::getType() const {
   return _type;
 }
 
+uint64_t ElfSymbol::getValue() const {
+  return _value;
+}
+
+uint64_t ElfSymbol::getSize() const {
+  return _size;
+}
+
+uint8_t ElfSymbol::getInfo() const {
+  return _info;
+}
+
+uint8_t ElfSymbol::getOther() const {
+  return _other;
+}
+
+uint16_t ElfSymbol::getShndx() const {
+  return _shndx;
+}
+
+const char *ElfSymbol::getName() const {
+  return _nameStr;
+}
+
+uint32_t ElfSymbol::getNameIdx() const {
+  return _name;
+}
+
 };

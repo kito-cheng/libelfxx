@@ -55,6 +55,14 @@ class ElfSymbol {
     bool isFile() const;
     Type getType() const;
 
+    uint64_t getValue() const;
+    uint64_t getSize() const;
+    uint8_t getInfo() const;
+    uint8_t getOther() const;
+    uint16_t getShndx() const;
+    const char *getName() const;
+    uint32_t getNameIdx() const;
+
     void print(FILE *fp);
   private:
     const char *_nameStr;
