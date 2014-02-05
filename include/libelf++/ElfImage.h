@@ -84,6 +84,7 @@ class ElfImage {
     ElfSection *getSection(unsigned idx);
     ElfSection *getSection(const char *name);
     ElfProgramHeader *getProgramHeader();
+    ElfSymbolTable *getSymbolTable(bool preferDynamicSymbolTable=false);
     Type getElfType() const;
 
     const std::string &getInterpreter() const;

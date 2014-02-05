@@ -491,4 +491,13 @@ ElfImage::const_iterator ElfImage::cend() const {
   return (const_iterator)_sections->end();
 }
 
+ElfSymbolTable *ElfImage::getSymbolTable(bool preferDynamicSymbolTable) {
+  if (preferDynamicSymbolTable && _dynSymbolTable)
+    return _dynSymbolTable;
+
+  if (_symbolTable)
+    return _symbolTable;
+  else
+    return _dynSymbolTable;
+}
 };
