@@ -47,6 +47,14 @@ class ElfSymbolTable {
     const_iterator cend() const;
 
     void print(FILE *fp);
+
+    iterator find(const std::string &name);
+    const_iterator find(const std::string &name) const;
+
+    ElfSymbol *find(uint64_t address,
+                    bool findNearIfPossible = false);
+    const ElfSymbol *find(uint64_t address,
+                          bool findNearIfPossible = false) const;
   private:
     SymbolTable _symtab;
 };
