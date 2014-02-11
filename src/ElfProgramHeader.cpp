@@ -56,6 +56,19 @@ ElfSegment *ElfProgramHeader::segment(size_t i) {
   }
 }
 
+const ElfSegment *ElfProgramHeader::operator[](size_t i) const {
+  return segment(i);
+}
+
+const ElfSegment *ElfProgramHeader::segment(size_t i) const {
+  if (i < _segments.size()) {
+    return _segments[i];
+  } else {
+    return nullptr;
+  }
+}
+
+
 size_t ElfProgramHeader::segmentNum() const {
   return _segments.size();
 }

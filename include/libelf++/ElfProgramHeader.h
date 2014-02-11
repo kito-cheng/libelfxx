@@ -46,6 +46,9 @@ class ElfProgramHeader {
     ElfSegment *segment(size_t i);
     ElfSegment *operator[](size_t i);
 
+    const ElfSegment *segment(size_t i) const;
+    const ElfSegment *operator[](size_t i) const;
+
   private:
     std::vector<ElfSegment *> _segments;
 };
