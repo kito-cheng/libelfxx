@@ -30,14 +30,18 @@ class ElfSegment {
     ElfSegment(Elf32_Phdr *phdr);
     ElfSegment(Elf64_Phdr *phdr);
 
-    uint32_t getType() const;
-    uint64_t getOffset() const;
-    uint64_t getVaddr() const;
-    uint64_t getPaddr() const;
-    uint32_t getFilesz() const;
-    uint32_t getMemsz() const;
-    uint32_t getFlags() const;
-    uint32_t getAlign() const;
+    uint32_t type() const;
+    uint64_t offset() const;
+    uint64_t vaddr() const;
+    uint64_t virtualAddress() const {return vaddr();}
+    uint64_t paddr() const;
+    uint64_t physicalAddress() const {return paddr();}
+    uint32_t filesz() const;
+    uint64_t fileSize() const {return filesz();}
+    uint32_t memsz() const;
+    uint64_t memorySize() const {return memsz();}
+    uint32_t flags() const;
+    uint32_t align() const;
   private:
     uint32_t _type;
     uint64_t _offset;

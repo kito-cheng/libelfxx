@@ -44,28 +44,28 @@ ElfSegment::ElfSegment(Elf64_Phdr *phdr)
 {
 }
 
-uint32_t ElfSegment::getType() const {
+uint32_t ElfSegment::type() const {
   return _type;
 }
-uint64_t ElfSegment::getOffset() const {
+uint64_t ElfSegment::offset() const {
   return _offset;
 }
-uint64_t ElfSegment::getVaddr() const {
+uint64_t ElfSegment::vaddr() const {
   return _vaddr;
 }
-uint64_t ElfSegment::getPaddr() const {
+uint64_t ElfSegment::paddr() const {
   return _paddr;
 }
-uint32_t ElfSegment::getFilesz() const {
+uint32_t ElfSegment::filesz() const {
   return _filesz;
 }
-uint32_t ElfSegment::getMemsz() const {
+uint32_t ElfSegment::memsz() const {
   return _memsz;
 }
-uint32_t ElfSegment::getFlags() const {
+uint32_t ElfSegment::flags() const {
   return _flags;
 }
-uint32_t ElfSegment::getAlign() const {
+uint32_t ElfSegment::align() const {
   return _align;
 }
 };
