@@ -329,7 +329,7 @@ size_t ElfImage::segmentNum() const {
   return _phnum;
 }
 
-ElfSection *ElfImage::section(unsigned idx) {
+ElfSection *ElfImage::section(size_t idx) {
   if (idx < _shnum) {
     return (*_sections)[idx];
   } else {

@@ -82,7 +82,7 @@ class ElfImage {
 
     size_t segmentNum() const;
     size_t sectionNum() const;
-    ElfSection *section(unsigned idx);
+    ElfSection *section(size_t idx);
     ElfSection *section(const char *name);
     ElfProgramHeader *programHeader();
     const ElfProgramHeader *programHeader() const;
