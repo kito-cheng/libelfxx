@@ -88,8 +88,8 @@ findSymbol(SymTab &symTab, uint64_t address, bool findNearIfPossible) {
   for (auto &sym_:symTab) {
     auto &sym = sym_.second;
     if ((sym->isObject() || sym->isFunction()) &&
-        address >= sym->getValue() &&
-        address < sym->getValue() + sym->getSize()) {
+        address >= sym->value() &&
+        address < sym->value() + sym->size()) {
       return sym;
     }
   }
@@ -99,10 +99,10 @@ findSymbol(SymTab &symTab, uint64_t address, bool findNearIfPossible) {
     for (auto &sym_:symTab) {
       auto &sym = sym_.second;
       if ((sym->isObject() || sym->isFunction()) &&
-          sym->getSize() == 0 &&
-          address >= sym->getValue() &&
-          (address - sym->getValue()) <= nearestDistance) {
-        nearestDistance = address - sym->getValue();
+          sym->size() == 0 &&
+          address >= sym->value() &&
+          (address - sym->value()) <= nearestDistance) {
+        nearestDistance = address - sym->value();
         nearestSym = sym;
       }
     }

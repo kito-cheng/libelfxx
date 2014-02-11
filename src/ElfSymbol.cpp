@@ -116,7 +116,7 @@ bool ElfSymbol::isWeak() const {
   return _bind == Bind::WEAK;
 }
 
-ElfSymbol::Bind ElfSymbol::getBind() const {
+ElfSymbol::Bind ElfSymbol::bind() const {
   return _bind;
 }
 
@@ -140,35 +140,35 @@ bool ElfSymbol::isFile() const {
   return _type == Type::FILE;
 }
 
-ElfSymbol::Type ElfSymbol::getType() const {
+ElfSymbol::Type ElfSymbol::type() const {
   return _type;
 }
 
-uint64_t ElfSymbol::getValue() const {
+uint64_t ElfSymbol::value() const {
   return _value;
 }
 
-uint64_t ElfSymbol::getSize() const {
+uint64_t ElfSymbol::size() const {
   return _size;
 }
 
-uint8_t ElfSymbol::getInfo() const {
+uint8_t ElfSymbol::info() const {
   return _info;
 }
 
-uint8_t ElfSymbol::getOther() const {
+uint8_t ElfSymbol::other() const {
   return _other;
 }
 
-uint16_t ElfSymbol::getShndx() const {
+uint16_t ElfSymbol::shndx() const {
   return _shndx;
 }
 
-const char *ElfSymbol::getName() const {
+const char *ElfSymbol::name() const {
   return _nameStr;
 }
 
-uint32_t ElfSymbol::getNameIdx() const {
+uint32_t ElfSymbol::nameIdx() const {
   return _name;
 }
 

@@ -46,22 +46,22 @@ class ElfSymbol {
     bool isLocal() const;
     bool isGlobal() const;
     bool isWeak() const;
-    Bind getBind() const;
+    Bind bind() const;
 
     bool isNoType() const;
     bool isObject() const;
     bool isFunction() const;
     bool isSection() const;
     bool isFile() const;
-    Type getType() const;
+    Type type() const;
 
-    uint64_t getValue() const;
-    uint64_t getSize() const;
-    uint8_t getInfo() const;
-    uint8_t getOther() const;
-    uint16_t getShndx() const;
-    const char *getName() const;
-    uint32_t getNameIdx() const;
+    uint64_t value() const;
+    uint64_t size() const;
+    uint8_t info() const;
+    uint8_t other() const;
+    uint16_t shndx() const;
+    const char *name() const;
+    uint32_t nameIdx() const;
 
     void print(FILE *fp);
   private:
