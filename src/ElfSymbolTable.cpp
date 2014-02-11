@@ -1,6 +1,7 @@
 #include <ElfSymbolTable.h>
 #include <ElfSection.h>
 #include <ElfImage.h>
+#include <ElfSymbol.h>
 #include <Debug.h>
 
 namespace libelfxx {

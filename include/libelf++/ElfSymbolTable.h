@@ -17,8 +17,7 @@
 #ifndef _LIBELFXX_ELF_SYMBOL_TABLE_H_
 #define _LIBELFXX_ELF_SYMBOL_TABLE_H_
 
-#include <ElfSymbol.h>
-#include <ElfImage.h>
+#include <libelf++/ElfImage.h>
 #include <elf.h>
 #include <stdio.h>
 #include <map>
@@ -26,6 +25,7 @@
 
 namespace libelfxx {
 
+class ElfSymbol;
 class ElfSection;
 
 class ElfSymbolTable {
