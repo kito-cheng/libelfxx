@@ -44,7 +44,7 @@ ElfProgramHeader::ElfProgramHeader(Elf64_Ehdr *ehdr, uint8_t *rawData)
 
 }
 
-ElfSegment *ElfProgramHeader::getSegment(unsigned i) {
+ElfSegment *ElfProgramHeader::segment(unsigned i) {
   if (i < _segments.size()) {
     return _segments[i];
   } else {
@@ -52,7 +52,7 @@ ElfSegment *ElfProgramHeader::getSegment(unsigned i) {
   }
 }
 
-size_t ElfProgramHeader::getSegmentNum() const {
+size_t ElfProgramHeader::segmentNum() const {
   return _segments.size();
 }
 
