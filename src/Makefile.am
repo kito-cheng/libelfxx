@@ -11,5 +11,6 @@ libelf___la_SOURCES = \
 
 AM_CPPFLAGS = -I$(top_srcdir)/include \
               -I$(top_srcdir)/include/libelf++ \
-              -D__STDC_FORMAT_MACROS \
-              -Wall -Wextra -std=c++11
+              -D__STDC_FORMAT_MACROS
+
+AM_CXXFLAGS = -Wall -Wextra -std=c++11 -Werror
