@@ -44,7 +44,11 @@ ElfProgramHeader::ElfProgramHeader(Elf64_Ehdr *ehdr, uint8_t *rawData)
 
 }
 
-ElfSegment *ElfProgramHeader::segment(unsigned i) {
+ElfSegment *ElfProgramHeader::operator[](size_t i) {
+  return segment(i);
+}
+
+ElfSegment *ElfProgramHeader::segment(size_t i) {
   if (i < _segments.size()) {
     return _segments[i];
   } else {

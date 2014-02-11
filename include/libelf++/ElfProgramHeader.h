@@ -43,7 +43,8 @@ class ElfProgramHeader {
     const_iterator cend() const;
 
     size_t segmentNum() const;
-    ElfSegment *segment(unsigned i);
+    ElfSegment *segment(size_t i);
+    ElfSegment *operator[](size_t i);
 
   private:
     std::vector<ElfSegment *> _segments;
