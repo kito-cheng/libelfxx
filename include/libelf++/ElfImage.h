@@ -30,6 +30,7 @@ namespace libelfxx {
 class ElfSection;
 class ElfSymbolTable;
 class ElfProgramHeader;
+class ElfSymbol;
 
 class ElfImage {
   public:
@@ -84,7 +85,9 @@ class ElfImage {
     ElfSection *section(unsigned idx);
     ElfSection *section(const char *name);
     ElfProgramHeader *programHeader();
+    const ElfProgramHeader *programHeader() const;
     ElfSymbolTable *symbolTable(bool preferDynamicSymbolTable=false);
+    const ElfSymbolTable *symbolTable(bool preferDynamicSymbolTable=false) const;
     Type elfType() const;
 
     const std::string &interpreter() const;
@@ -92,6 +95,9 @@ class ElfImage {
     Endian endian() const;
     bool isLittleEndian() const;
     bool isBigEndian() const;
+
+    const ElfSymbol *findSymbol(uint64_t address,
+                                bool findNearIfPossible = false) const;
 
   private:
     ElfImage(Elf64_Ehdr *ehdr,

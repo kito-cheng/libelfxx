@@ -346,6 +346,10 @@ ElfSection *ElfImage::section(const char *name) {
   }
 }
 
+const ElfProgramHeader *ElfImage::programHeader() const {
+  return _programHeader;
+}
+
 ElfProgramHeader *ElfImage::programHeader() {
   return _programHeader;
 }
@@ -491,13 +495,37 @@ ElfImage::const_iterator ElfImage::cend() const {
   return (const_iterator)_sections->end();
 }
 
-ElfSymbolTable *ElfImage::symbolTable(bool preferDynamicSymbolTable) {
-  if (preferDynamicSymbolTable && _dynSymbolTable)
-    return _dynSymbolTable;
+template <typename SymbolTable>
+static SymbolTable *
+getSymbolTable(bool preferDyn, SymbolTable *dynSymTab, SymbolTable *symTab)
+{
+  if (preferDyn && dynSymTab)
+    return dynSymTab;
 
-  if (_symbolTable)
-    return _symbolTable;
+  if (symTab)
+    return symTab;
   else
-    return _dynSymbolTable;
+    return dynSymTab;
 }
+
+const ElfSymbolTable *
+ElfImage::symbolTable(bool preferDynamicSymbolTable) const {
+  return getSymbolTable(
+           preferDynamicSymbolTable, _dynSymbolTable, _symbolTable);
+}
+
+ElfSymbolTable *ElfImage::symbolTable(bool preferDynamicSymbolTable) {
+  return getSymbolTable(
+           preferDynamicSymbolTable, _dynSymbolTable, _symbolTable);
+}
+
+const ElfSymbol *
+ElfImage::findSymbol(uint64_t address, bool findNearIfPossible) const {
+  const ElfSymbolTable *symTab = symbolTable();
+  if (symTab)
+    return symTab->find(address, findNearIfPossible);
+  else
+    return nullptr;
+}
+
 };
