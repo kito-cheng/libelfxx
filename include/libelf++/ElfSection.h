@@ -28,18 +28,18 @@ class ElfSection {
     ElfSection(const char *name, Elf32_Shdr *shdr, uint8_t *rawData);
     ElfSection(const char *name, Elf64_Shdr *shdr, uint8_t *rawData);
 
-    const char *getNameStr() const;
-    uint32_t getName() const;
-    uint64_t getFlags() const;
-    uint64_t getAddr() const;
-    uint64_t getOffset() const;
-    uint64_t getSize() const;
-    uint32_t getLink() const;
-    uint32_t getInfo() const;
-    uint64_t getAddralign() const;
-    uint64_t getEntsize() const;
+    const char *nameStr() const;
+    uint32_t name() const;
+    uint64_t flags() const;
+    uint64_t addr() const;
+    uint64_t offset() const;
+    uint64_t size() const;
+    uint32_t link() const;
+    uint32_t info() const;
+    uint64_t addralign() const;
+    uint64_t entsize() const;
 
-    uint8_t *getContent();
+    uint8_t *content();
 
     void print(FILE *fp);
   private:

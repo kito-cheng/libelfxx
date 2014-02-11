@@ -13,14 +13,14 @@ static
 ElfSymbolTable::SymbolTable initSymTab(ElfSection *symtab,
                                        ElfSection *strtab,
                                        uint8_t *rawData) {
-  Elf_Sym *syms = reinterpret_cast<Elf_Sym*>(rawData + symtab->getOffset());
-  Elf_Word numSym = (symtab->getSize() / symtab->getEntsize());
+  Elf_Sym *syms = reinterpret_cast<Elf_Sym*>(rawData + symtab->offset());
+  Elf_Word numSym = (symtab->size() / symtab->entsize());
   ElfSymbolTable::SymbolTable symbolTable;
 
   for (Elf_Word i=0;i<numSym;++i) {
     Elf_Sym *sym = syms+i;
     const char *symName = (const char *)(rawData +
-                                         strtab->getOffset() +
+                                         strtab->offset() +
                                          sym->st_name);
     ElfSymbol *symbol = new ElfSymbol(symName, &syms[i]);
     symbolTable.insert(std::make_pair(symName, symbol));

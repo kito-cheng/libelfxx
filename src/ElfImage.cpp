@@ -31,7 +31,7 @@ namespace libelfxx {
 static std::string initInterpreter(libelfxx::ElfImage::SectionMap *sectionMap) {
   auto itr = sectionMap->find(".interp");
   if (itr != sectionMap->end()) {
-    return std::string(reinterpret_cast<char*>(itr->second->getContent()));
+    return std::string(reinterpret_cast<const char*>(itr->second->content()));
   } else {
     return std::string("");
   }

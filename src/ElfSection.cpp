@@ -90,47 +90,47 @@ void ElfSection::print(FILE *fp) {
               _entsize);
 }
 
-uint8_t *ElfSection::getContent() {
+uint8_t *ElfSection::content() {
   return _content;
 }
 
-const char *ElfSection::getNameStr() const {
+const char *ElfSection::nameStr() const {
   return _nameStr;
 }
 
-uint32_t ElfSection::getName() const {
+uint32_t ElfSection::name() const {
   return _name;
 }
 
-uint64_t ElfSection::getFlags() const {
+uint64_t ElfSection::flags() const {
   return _flags;
 }
 
-uint64_t ElfSection::getAddr() const {
+uint64_t ElfSection::addr() const {
   return _addr;
 }
 
-uint64_t ElfSection::getOffset() const {
+uint64_t ElfSection::offset() const {
   return _offset;
 }
 
-uint64_t ElfSection::getSize() const {
+uint64_t ElfSection::size() const {
   return _size;
 }
 
-uint32_t ElfSection::getLink() const {
+uint32_t ElfSection::link() const {
   return _link;
 }
 
-uint32_t ElfSection::getInfo() const {
+uint32_t ElfSection::info() const {
   return _info;
 }
 
-uint64_t ElfSection::getAddralign() const {
+uint64_t ElfSection::addralign() const {
   return _addralign;
 }
 
-uint64_t ElfSection::getEntsize() const {
+uint64_t ElfSection::entsize() const {
   return _entsize;
 }
 
