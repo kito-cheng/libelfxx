@@ -39,9 +39,9 @@ class ElfSection {
     uint64_t addralign() const;
     uint64_t entsize() const;
 
-    uint8_t *content();
+    const uint8_t *content() const;
 
-    void print(FILE *fp);
+    void print(FILE *fp) const;
   private:
     const char *_nameStr;
     uint32_t _name;

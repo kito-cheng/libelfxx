@@ -67,7 +67,7 @@ ElfSection::ElfSection(const char *name, Elf64_Shdr *shdr, uint8_t *rawData)
 {
 }
 
-void ElfSection::print(FILE *fp) {
+void ElfSection::print(FILE *fp) const {
   fprintf(fp, "Section `%s`:\n"
               "  sh_name : %" PRIu32 "\n"
               "  sh_flags : 0x%" PRIx64 "\n"
@@ -90,7 +90,7 @@ void ElfSection::print(FILE *fp) {
               _entsize);
 }
 
-uint8_t *ElfSection::content() {
+const uint8_t *ElfSection::content() const {
   return _content;
 }
 
