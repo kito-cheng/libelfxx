@@ -265,71 +265,71 @@ ElfImage *ElfImage::create(FILE *fp) {
 }
 
 
-const uint8_t *ElfImage::getIdent() const {
+const uint8_t *ElfImage::ident() const {
   return _ident;
 }
 
-uint16_t ElfImage::getType() const {
+uint16_t ElfImage::type() const {
   return _type;
 }
 
-uint16_t ElfImage::getMachine() const {
+uint16_t ElfImage::machine() const {
   return _machine;
 }
 
-uint32_t ElfImage::getVersion() const {
+uint32_t ElfImage::version() const {
   return _version;
 }
 
-uint64_t ElfImage::getEntry() const {
+uint64_t ElfImage::entry() const {
   return _entry;
 }
 
-uint64_t ElfImage::getPhoff() const {
+uint64_t ElfImage::phoff() const {
   return _phoff;
 }
 
-uint64_t ElfImage::getShoff() const {
+uint64_t ElfImage::shoff() const {
   return _shoff;
 }
 
-uint32_t ElfImage::getFlags() const {
+uint32_t ElfImage::flags() const {
   return _flags;
 }
 
-uint16_t ElfImage::getEhsize() const {
+uint16_t ElfImage::ehsize() const {
   return _ehsize;
 }
 
-uint16_t ElfImage::getPhentsize() const {
+uint16_t ElfImage::phentsize() const {
   return _phentsize;
 }
 
-uint16_t ElfImage::getPhnum() const {
+uint16_t ElfImage::phnum() const {
   return _phnum;
 }
 
-uint16_t ElfImage::getShentsize() const {
+uint16_t ElfImage::shentsize() const {
   return _shentsize;
 }
 
-uint16_t ElfImage::getShnum() const {
+uint16_t ElfImage::shnum() const {
   return _shnum;
 }
 
-uint16_t ElfImage::getShstrndx() const {
+uint16_t ElfImage::shstrndx() const {
   return _shstrndx;
 }
 
-size_t ElfImage::getSectionNum() const {
+size_t ElfImage::sectionNum() const {
   return _shnum;
 }
 
-size_t ElfImage::getSegmentNum() const {
+size_t ElfImage::segmentNum() const {
   return _phnum;
 }
 
-ElfSection *ElfImage::getSection(unsigned idx) {
+ElfSection *ElfImage::section(unsigned idx) {
   if (idx < _shnum) {
     return (*_sections)[idx];
   } else {
@@ -337,7 +337,7 @@ ElfSection *ElfImage::getSection(unsigned idx) {
   }
 }
 
-ElfSection *ElfImage::getSection(const char *name) {
+ElfSection *ElfImage::section(const char *name) {
   auto itr = _sectionMap->find(name);
   if (itr == _sectionMap->end()) {
     return nullptr;
@@ -346,15 +346,15 @@ ElfSection *ElfImage::getSection(const char *name) {
   }
 }
 
-ElfProgramHeader *ElfImage::getProgramHeader() {
+ElfProgramHeader *ElfImage::programHeader() {
   return _programHeader;
 }
 
-ElfImage::Type ElfImage::getElfType() const {
+ElfImage::Type ElfImage::elfType() const {
   return _elfType;
 }
 
-const std::string &ElfImage::getInterpreter() const {
+const std::string &ElfImage::interpreter() const {
   return _interpreter;
 }
 
@@ -446,11 +446,11 @@ machine2str(uint16_t mach)
   }
 }
 
-const char* ElfImage::getMachineString() const {
+const char* ElfImage::machineString() const {
   return machine2str(_machine);
 }
 
-ElfImage::Endian ElfImage::getEndian() const {
+ElfImage::Endian ElfImage::endian() const {
   switch (_ident[EI_DATA]) {
     case ELFDATANONE: return ELF_NONE_ENDIAN;
     case ELFDATA2LSB: return ELF_LITTLE_ENDIAN;
@@ -491,7 +491,7 @@ ElfImage::const_iterator ElfImage::cend() const {
   return (const_iterator)_sections->end();
 }
 
-ElfSymbolTable *ElfImage::getSymbolTable(bool preferDynamicSymbolTable) {
+ElfSymbolTable *ElfImage::symbolTable(bool preferDynamicSymbolTable) {
   if (preferDynamicSymbolTable && _dynSymbolTable)
     return _dynSymbolTable;
 

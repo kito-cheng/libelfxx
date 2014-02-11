@@ -63,33 +63,33 @@ class ElfImage {
     const_iterator cbegin() const;
     const_iterator cend() const;
 
-    const uint8_t *getIdent() const;
-    uint16_t getType() const;
-    const char *getMachineString() const;
-    uint16_t getMachine() const;
-    uint32_t getVersion() const;
-    uint64_t getEntry() const;
-    uint64_t getPhoff() const;
-    uint64_t getShoff() const;
-    uint32_t getFlags() const;
-    uint16_t getEhsize() const;
-    uint16_t getPhentsize() const;
-    uint16_t getPhnum() const;
-    uint16_t getShentsize() const;
-    uint16_t getShnum() const;
-    uint16_t getShstrndx() const;
+    const uint8_t *ident() const;
+    uint16_t type() const;
+    const char *machineString() const;
+    uint16_t machine() const;
+    uint32_t version() const;
+    uint64_t entry() const;
+    uint64_t phoff() const;
+    uint64_t shoff() const;
+    uint32_t flags() const;
+    uint16_t ehsize() const;
+    uint16_t shentsize() const;
+    uint16_t phnum() const;
+    uint16_t phentsize() const;
+    uint16_t shnum() const;
+    uint16_t shstrndx() const;
 
-    size_t getSegmentNum() const;
-    size_t getSectionNum() const;
-    ElfSection *getSection(unsigned idx);
-    ElfSection *getSection(const char *name);
-    ElfProgramHeader *getProgramHeader();
-    ElfSymbolTable *getSymbolTable(bool preferDynamicSymbolTable=false);
-    Type getElfType() const;
+    size_t segmentNum() const;
+    size_t sectionNum() const;
+    ElfSection *section(unsigned idx);
+    ElfSection *section(const char *name);
+    ElfProgramHeader *programHeader();
+    ElfSymbolTable *symbolTable(bool preferDynamicSymbolTable=false);
+    Type elfType() const;
 
-    const std::string &getInterpreter() const;
+    const std::string &interpreter() const;
 
-    Endian getEndian() const;
+    Endian endian() const;
     bool isLittleEndian() const;
     bool isBigEndian() const;
 
