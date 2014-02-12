@@ -25,6 +25,9 @@
 #include <ElfSection.h>
 #include <Debug.h>
 
+#define DEBUG(args...)
+#define FATAL(args...)
+
 enum Option {
   DUMMY,
   ALL,
@@ -276,20 +279,20 @@ phdrType2str(uint32_t phdrType) {
 }
 
 void printFileHeader(libelfxx::ElfImage *image) {
-  const uint8_t *ident = image->getIdent();
+  const uint8_t *ident = image->ident();
 
   uint8_t endian = ident[EI_DATA];
   uint8_t osabi = ident[EI_OSABI];
   uint8_t abiVersion = ident[EI_ABIVERSION];
   const char *currentStr = "";
-  if (image->getVersion() == EV_CURRENT) {
+  if (image->version() == EV_CURRENT) {
     currentStr = " (current)";
   }
   const char *endianStr = endian2str(endian);
-  const char *typeStr = type2str(image->getElfType());
-  const char *elftypeStr = elftype2str(image->getType());
+  const char *typeStr = type2str(image->elfType());
+  const char *elftypeStr = elftype2str(image->type());
   const char *osabiStr = osabi2str(osabi);
-  const char *machineStr = image->getMachineString();
+  const char *machineStr = image->machineString();
 
   printf("ELF Header:\n");
   printf("  Magic:   ");
@@ -301,7 +304,7 @@ void printFileHeader(libelfxx::ElfImage *image) {
          typeStr);
   printf("  Data:                              %s\n", endianStr);
   printf("  Version:                           %" PRIu8 "%s\n",
-         image->getVersion(), currentStr);
+         image->version(), currentStr);
   printf("  OS/ABI:                            %s\n",
          osabiStr);
   printf("  ABI Version:                       %" PRIu8 "\n",
@@ -311,42 +314,42 @@ void printFileHeader(libelfxx::ElfImage *image) {
   printf("  Machine:                           %s\n",
          machineStr);
   printf("  Version:                           0x%" PRIx32 "\n",
-         image->getVersion());
+         image->version());
   printf("  Entry point address:               0x%" PRIx64 "\n",
-         image->getEntry());
+         image->entry());
   printf("  Start of program headers:          %" PRIu64 " (bytes into file)\n",
-         image->getPhoff());
+         image->phoff());
   printf("  Start of section headers:          %" PRIu64 " (bytes into file)\n",
-         image->getShoff());
+         image->shoff());
   printf("  Flags:                             0x%" PRIx32 "\n",
-         image->getFlags());
+         image->flags());
   printf("  Size of this header:               %" PRId16 " (bytes)\n",
-         image->getEhsize());
+         image->ehsize());
   printf("  Size of program headers:           %" PRId16 " (bytes)\n",
-         image->getPhentsize());
+         image->phentsize());
   printf("  Number of program headers:         %" PRId16 "\n",
-         image->getPhnum());
+         image->phnum());
   printf("  Size of section headers:           %" PRId16 " (bytes)\n",
-         image->getShentsize());
+         image->shentsize());
   printf("  Number of section headers:         %" PRId16 "\n",
-         image->getShnum());
+         image->shnum());
   printf("  Section header string table index: %" PRId16 "\n",
-         image->getShstrndx());
+         image->shstrndx());
 }
 
 static void
 printProgramHeaders(libelfxx::ElfImage *image){
-  const char *elftypeStr = elftype2str(image->getType());
-  libelfxx::ElfProgramHeader *programHeader = image->getProgramHeader();
+  const char *elftypeStr = elftype2str(image->type());
+  libelfxx::ElfProgramHeader *programHeader = image->programHeader();
   printf("\n");
   printf("Elf file type is %s\n", elftypeStr);
-  printf("Entry point 0x%" PRIx64 "\n", image->getEntry());
+  printf("Entry point 0x%" PRIx64 "\n", image->entry());
   printf("There are %" PRId16 " program headers, starting at "
          "offset %" PRIu64 "\n",
-         image->getPhnum(),
-         image->getPhoff());
+         image->phnum(),
+         image->phoff());
   printf("\nProgram Headers:\n");
-  switch (image->getElfType()) {
+  switch (image->elfType()) {
     case libelfxx::ElfImage::ELF32:
        {
           printf("  Type           Offset   VirtAddr   PhysAddr   "
@@ -366,15 +369,15 @@ printProgramHeaders(libelfxx::ElfImage *image){
   }
 
   for (auto *segment : *programHeader) {
-    uint64_t offset = segment->getOffset();
-    uint64_t vaddr = segment->getVaddr();
-    uint64_t paddr = segment->getPaddr();
-    uint32_t filesz = segment->getFilesz();
-    uint32_t memsz = segment->getMemsz();
-    uint32_t flags = segment->getFlags();
-    uint32_t align = segment->getAlign();
-    const char *phdrType = phdrType2str(segment->getType());
-    switch (image->getElfType()) {
+    uint64_t offset = segment->offset();
+    uint64_t vaddr = segment->vaddr();
+    uint64_t paddr = segment->paddr();
+    uint32_t filesz = segment->filesz();
+    uint32_t memsz = segment->memsz();
+    uint32_t flags = segment->flags();
+    uint32_t align = segment->align();
+    const char *phdrType = phdrType2str(segment->type());
+    switch (image->elfType()) {
       case libelfxx::ElfImage::ELF32:
          {
             printf("  %-14.14s 0x%6.6" PRIx64 " 0x%8.8" PRIx64
@@ -402,28 +405,28 @@ printProgramHeaders(libelfxx::ElfImage *image){
       default:
          FATAL("Unknown Elf Type!\n");
     }
-    if (segment->getType() == PT_INTERP) {
+    if (segment->type() == PT_INTERP) {
       printf("      [Requesting program interpreter: %s]\n",
-             image->getInterpreter().c_str());
+             image->interpreter().c_str());
     }
   }
   printf("\n");
   printf(" Section to Segment mapping:\n");
   printf("  Segment Sections...\n");
   for (unsigned i = 0;
-       i<programHeader->getSegmentNum();
+       i<programHeader->segmentNum();
        ++i) {
-    libelfxx::ElfSegment *segment = programHeader->getSegment(i);
+    libelfxx::ElfSegment *segment = programHeader->segment(i);
     printf("   %2.2u     ", i);
-    uint64_t beginAddr = segment->getPaddr();
-    uint64_t endAddr =  beginAddr + segment->getMemsz();
+    uint64_t beginAddr = segment->paddr();
+    uint64_t endAddr =  beginAddr + segment->memsz();
     for (unsigned j = 1; /* Skip NULL section */
-         j<image->getSectionNum();
+         j<image->sectionNum();
          ++j) {
-      libelfxx::ElfSection *section = image->getSection(j);
-      uint64_t addr = section->getAddr();
+      libelfxx::ElfSection *section = image->section(j);
+      uint64_t addr = section->addr();
       if (addr >= beginAddr && addr < endAddr) {
-        printf("%s ", section->getNameStr());
+        printf("%s ", section->nameStr());
       }
     }
     printf("\n");
@@ -432,14 +435,14 @@ printProgramHeaders(libelfxx::ElfImage *image){
 
 static void
 printSectionHeaders(libelfxx::ElfImage *image) {
-  printf("There are %zu section headers, starting at offset 0x" PRIx64 ":\n\n",
-         image->getSectionNum(), image->getPhoff());
+  printf("There are %zu section headers, starting at offset 0x%" PRIx64 ":\n\n",
+         image->sectionNum(), image->phoff());
   printf("Section Headers:\n");
   printf("  [Nr] Name              Type            Addr     Off    Size"
          "   ES Flg Lk Inf Al\n");
   unsigned i = 0;
   for (auto section : *image) {
-    printf("  [%2u] %s\n", i++, section->getNameStr());
+    printf("  [%2u] %s\n", i++, section->nameStr());
   }
   printf("Key to Flags:\n"
          "  W (write), A (alloc), X (execute), M (merge), S (strings)\n"
