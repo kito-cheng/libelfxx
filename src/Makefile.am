@@ -9,6 +9,11 @@ libelf___la_SOURCES = \
   ElfSymbolTable.cpp \
   Debug.cpp
 
+noinst_PROGRAMS = elftool
+
+elftool_SOURCES = elftool.cpp
+elftool_LDADD = -lelf++
+
 AM_CPPFLAGS = -I$(top_srcdir)/include \
               -I$(top_srcdir)/include/libelf++ \
               -D__STDC_FORMAT_MACROS
