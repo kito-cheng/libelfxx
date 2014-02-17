@@ -18,6 +18,7 @@
 #include <ElfSection.h>
 #include <ElfSymbolTable.h>
 #include <ElfProgramHeader.h>
+#include <ElfDynamicInfo.h>
 #include <Debug.h>
 
 #include <stdio.h>
@@ -44,7 +45,8 @@ ElfImage::ElfImage(Elf64_Ehdr *ehdr,
                    SectionMap *sectionMap,
                    ElfSymbolTable *symbolTable,
                    ElfSymbolTable *dynSymbolTable,
-                   ElfProgramHeader *programHeader)
+                   ElfProgramHeader *programHeader,
+                   ElfDynamicInfo *dynamic)
   : _type(ehdr->e_type)
   , _machine(ehdr->e_machine)
   , _version(ehdr->e_version)
@@ -65,6 +67,7 @@ ElfImage::ElfImage(Elf64_Ehdr *ehdr,
   , _symbolTable(symbolTable)
   , _dynSymbolTable(dynSymbolTable)
   , _programHeader(programHeader)
+  , _dynamicInfo(dynamic)
   , _elfType(Type::ELF64)
 {
   std::copy(ehdr->e_ident, ehdr->e_ident+EI_NIDENT, _ident);
@@ -76,7 +79,8 @@ ElfImage::ElfImage(Elf32_Ehdr *ehdr,
                    SectionMap *sectionMap,
                    ElfSymbolTable *symbolTable,
                    ElfSymbolTable *dynSymbolTable,
-                   ElfProgramHeader *programHeader)
+                   ElfProgramHeader *programHeader,
+                   ElfDynamicInfo *dynamic)
   : _type(ehdr->e_type)
   , _machine(ehdr->e_machine)
   , _version(ehdr->e_version)
@@ -97,6 +101,7 @@ ElfImage::ElfImage(Elf32_Ehdr *ehdr,
   , _symbolTable(symbolTable)
   , _dynSymbolTable(dynSymbolTable)
   , _programHeader(programHeader)
+  , _dynamicInfo(dynamic)
   , _elfType(Type::ELF32)
 {
   std::copy(ehdr->e_ident, ehdr->e_ident+EI_NIDENT, _ident);
@@ -144,6 +149,7 @@ struct ElfImageData {
   ElfSymbolTable *symbolTable;
   ElfSymbolTable *dynSymbolTable;
   ElfProgramHeader *programHeader;
+  ElfDynamicInfo *dynamicInfo;
 };
 
 
@@ -211,6 +217,13 @@ static bool _create(FILE *fp, ElfImageData *data,
     data->symbolTable = symbolTable;
     data->dynSymbolTable = dynSymbolTable;
     data->programHeader = programHeader;
+    auto dynSecItr = sectionMap->find(".dynamic");
+    if (dynSecItr != sectionMap->end()) {
+      ElfSection *dynSec = dynSecItr->second;
+      data->dynamicInfo = new ElfDynamicInfo(dynSec, elfType);
+    } else {
+      data->dynamicInfo = nullptr;
+    }
     return true;
   } while (0);
   /* Error handling... */
@@ -240,7 +253,7 @@ ElfImage *ElfImage::create(FILE *fp) {
           return new ElfImage(data.ehdr, data.rawData,
                               data.sections, data.sectionMap,
                               data.symbolTable, data.dynSymbolTable,
-                              data.programHeader);
+                              data.programHeader, data.dynamicInfo);
         }
       }
       break;
@@ -252,7 +265,7 @@ ElfImage *ElfImage::create(FILE *fp) {
           return new ElfImage(data.ehdr, data.rawData,
                               data.sections, data.sectionMap,
                               data.symbolTable, data.dynSymbolTable,
-                              data.programHeader);
+                              data.programHeader, data.dynamicInfo);
         }
       }
       break;

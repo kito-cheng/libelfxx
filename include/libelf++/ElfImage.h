@@ -31,6 +31,7 @@ class ElfSection;
 class ElfSymbolTable;
 class ElfProgramHeader;
 class ElfSymbol;
+class ElfDynamicInfo;
 
 class ElfImage {
   public:
@@ -88,6 +89,10 @@ class ElfImage {
     const ElfProgramHeader *programHeader() const;
     ElfSymbolTable *symbolTable(bool preferDynamicSymbolTable=false);
     const ElfSymbolTable *symbolTable(bool preferDynamicSymbolTable=false) const;
+
+    ElfDynamicInfo *dynamic();
+    const ElfDynamicInfo *dynamic() const;
+
     Type elfType() const;
 
     const std::string &interpreter() const;
@@ -106,14 +111,16 @@ class ElfImage {
              SectionMap *sectionMap,
              ElfSymbolTable *symbolTable,
              ElfSymbolTable *dynSymbolTable,
-             ElfProgramHeader *programHeader);
+             ElfProgramHeader *programHeader,
+             ElfDynamicInfo *dynamic);
     ElfImage(Elf32_Ehdr *ehdr,
              uint8_t *rawData,
              Sections *sections,
              SectionMap *sectionMap,
              ElfSymbolTable *symbolTable,
              ElfSymbolTable *dynSymbolTable,
-             ElfProgramHeader *programHeader);
+             ElfProgramHeader *programHeader,
+             ElfDynamicInfo *dynamic);
     uint8_t _ident[EI_NIDENT];
     uint16_t _type;
     uint16_t _machine;
@@ -137,6 +144,7 @@ class ElfImage {
     ElfSymbolTable *_symbolTable;
     ElfSymbolTable *_dynSymbolTable;
     ElfProgramHeader *_programHeader;
+    ElfDynamicInfo *_dynamicInfo;
     Type _elfType;
 };
 

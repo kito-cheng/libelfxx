@@ -7,6 +7,7 @@ libelf___la_SOURCES = \
   ElfProgramHeader.cpp \
   ElfSegment.cpp \
   ElfSymbolTable.cpp \
+  ElfDynamicInfo.cpp \
   Debug.cpp
 
 noinst_PROGRAMS = elftool
