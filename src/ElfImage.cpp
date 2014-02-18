@@ -220,7 +220,7 @@ static bool _create(FILE *fp, ElfImageData *data,
     auto dynSecItr = sectionMap->find(".dynamic");
     if (dynSecItr != sectionMap->end()) {
       ElfSection *dynSec = dynSecItr->second;
-      data->dynamicInfo = new ElfDynamicInfo(dynSec, elfType);
+      data->dynamicInfo = new ElfDynamicInfo(*sectionMap, dynSec, elfType);
     } else {
       data->dynamicInfo = nullptr;
     }
