@@ -40,6 +40,7 @@ static uint8_t *initContent(Elf_Shdr *shdr, uint8_t *rawData) {
 ElfSection::ElfSection(const char *name, Elf32_Shdr *shdr, uint8_t *rawData)
   : _nameStr(name)
   , _name(shdr->sh_name)
+  , _type(shdr->sh_type)
   , _flags(shdr->sh_flags)
   , _addr(shdr->sh_addr)
   , _offset(shdr->sh_offset)
@@ -55,6 +56,7 @@ ElfSection::ElfSection(const char *name, Elf32_Shdr *shdr, uint8_t *rawData)
 ElfSection::ElfSection(const char *name, Elf64_Shdr *shdr, uint8_t *rawData)
   : _nameStr(name)
   , _name(shdr->sh_name)
+  , _type(shdr->sh_type)
   , _flags(shdr->sh_flags)
   , _addr(shdr->sh_addr)
   , _offset(shdr->sh_offset)
@@ -70,6 +72,7 @@ ElfSection::ElfSection(const char *name, Elf64_Shdr *shdr, uint8_t *rawData)
 void ElfSection::print(FILE *fp) const {
   fprintf(fp, "Section `%s`:\n"
               "  sh_name : %" PRIu32 "\n"
+              "  sh_type : 0x%" PRIx32 "\n"
               "  sh_flags : 0x%" PRIx64 "\n"
               "  sh_addr : 0x%" PRIx64 "\n"
               "  sh_offset : 0x%" PRIx64 "\n"
@@ -80,6 +83,7 @@ void ElfSection::print(FILE *fp) const {
               "  sh_entsize : %" PRIu64 "\n",
               _nameStr,
               _name,
+              _type,
               _flags,
               _addr,
               _offset,
@@ -100,6 +104,10 @@ const char *ElfSection::nameStr() const {
 
 uint32_t ElfSection::name() const {
   return _name;
+}
+
+uint32_t ElfSection::type() const {
+  return _type;
 }
 
 uint64_t ElfSection::flags() const {

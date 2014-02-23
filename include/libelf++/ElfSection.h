@@ -30,6 +30,7 @@ class ElfSection {
 
     const char *nameStr() const;
     uint32_t name() const;
+    uint32_t type() const;
     uint64_t flags() const;
     uint64_t addr() const;
     uint64_t offset() const;
@@ -45,6 +46,7 @@ class ElfSection {
   private:
     const char *_nameStr;
     uint32_t _name;
+    uint32_t _type;
     uint64_t _flags;
     uint64_t _addr;
     uint64_t _offset;
