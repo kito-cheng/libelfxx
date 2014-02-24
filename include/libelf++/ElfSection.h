@@ -27,6 +27,7 @@ class ElfSection {
   public:
     ElfSection(const char *name, Elf32_Shdr *shdr, uint8_t *rawData);
     ElfSection(const char *name, Elf64_Shdr *shdr, uint8_t *rawData);
+    virtual ~ElfSection();
 
     const char *nameStr() const;
     uint32_t name() const;
@@ -54,7 +55,7 @@ class ElfSection {
 
     const uint8_t *content() const;
 
-    void print(FILE *fp) const;
+    virtual void print(FILE *fp) const;
   private:
     const char *_nameStr;
     uint32_t _name;
