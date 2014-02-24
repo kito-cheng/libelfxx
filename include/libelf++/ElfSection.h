@@ -40,6 +40,18 @@ class ElfSection {
     uint64_t addralign() const;
     uint64_t entsize() const;
 
+    bool RELA() const;
+    bool REL() const;
+    bool DYNAMIC() const;
+
+    bool PROGBITS() const;
+    bool SYMTAB() const;
+    bool STRTAB() const;
+    bool HASH() const;
+    bool NOBITS() const;
+    bool DYNSYM() const;
+    bool GROUP() const;
+
     const uint8_t *content() const;
 
     void print(FILE *fp) const;

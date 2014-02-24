@@ -142,4 +142,44 @@ uint64_t ElfSection::entsize() const {
   return _entsize;
 }
 
+bool ElfSection::RELA() const {
+  return _type == SHT_RELA;
+}
+
+bool ElfSection::PROGBITS() const {
+  return _type == SHT_PROGBITS;
+}
+
+bool ElfSection::SYMTAB() const {
+  return _type == SHT_SYMTAB;
+}
+
+bool ElfSection::STRTAB() const {
+  return _type == SHT_STRTAB;
+}
+
+bool ElfSection::HASH() const {
+  return _type == SHT_HASH;
+}
+
+bool ElfSection::DYNAMIC() const {
+  return _type == SHT_DYNAMIC;
+}
+
+bool ElfSection::NOBITS() const {
+  return _type == SHT_NOBITS;
+}
+
+bool ElfSection::REL() const {
+  return _type == SHT_REL;
+}
+
+bool ElfSection::DYNSYM() const {
+  return _type == SHT_DYNSYM;
+}
+
+bool ElfSection::GROUP() const {
+  return _type == SHT_GROUP;
+}
+
 };
