@@ -26,8 +26,8 @@ namespace libelfxx {
 
 class ElfSection {
   public:
-    ElfSection(const char *name, Elf32_Shdr *shdr, uint8_t *rawData);
-    ElfSection(const char *name, Elf64_Shdr *shdr, uint8_t *rawData);
+    ElfSection(const std::string &name, Elf32_Shdr *shdr, uint8_t *rawData);
+    ElfSection(const std::string &name, Elf64_Shdr *shdr, uint8_t *rawData);
     virtual ~ElfSection();
 
     const std::string &nameStr() const;

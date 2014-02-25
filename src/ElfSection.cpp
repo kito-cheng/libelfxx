@@ -37,7 +37,9 @@ static uint8_t *initContent(Elf_Shdr *shdr, uint8_t *rawData) {
   return content;
 }
 
-ElfSection::ElfSection(const char *name, Elf32_Shdr *shdr, uint8_t *rawData)
+ElfSection::ElfSection(const std::string &name,
+                       Elf32_Shdr *shdr,
+                       uint8_t *rawData)
   : _nameStr(name)
   , _name(shdr->sh_name)
   , _type(shdr->sh_type)
@@ -53,7 +55,9 @@ ElfSection::ElfSection(const char *name, Elf32_Shdr *shdr, uint8_t *rawData)
 {
 }
 
-ElfSection::ElfSection(const char *name, Elf64_Shdr *shdr, uint8_t *rawData)
+ElfSection::ElfSection(const std::string &name,
+                       Elf64_Shdr *shdr,
+                       uint8_t *rawData)
   : _nameStr(name)
   , _name(shdr->sh_name)
   , _type(shdr->sh_type)
