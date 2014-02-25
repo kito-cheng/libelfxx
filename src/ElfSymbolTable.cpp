@@ -7,20 +7,21 @@
 namespace libelfxx {
 
 
-template<class Elf_Sym,
+template<class Elf_Shdr,
+         class Elf_Sym,
          class Elf_Word>
 static
-ElfSymbolTable::SymbolTable initSymTab(ElfSection *symtab,
-                                       ElfSection *strtab,
+ElfSymbolTable::SymbolTable initSymTab(Elf_Shdr *shdr,
+                                       Elf_Shdr *strtab,
                                        uint8_t *rawData) {
-  Elf_Sym *syms = reinterpret_cast<Elf_Sym*>(rawData + symtab->offset());
-  Elf_Word numSym = (symtab->size() / symtab->entsize());
+  Elf_Sym *syms = reinterpret_cast<Elf_Sym*>(rawData + shdr->sh_offset);
+  Elf_Word numSym = (shdr->sh_size / shdr->sh_entsize);
   ElfSymbolTable::SymbolTable symbolTable;
 
   for (Elf_Word i=0;i<numSym;++i) {
     Elf_Sym *sym = syms+i;
     const char *symName = (const char *)(rawData +
-                                         strtab->offset() +
+                                         strtab->sh_offset +
                                          sym->st_name);
     ElfSymbol *symbol = new ElfSymbol(symName, &syms[i]);
     symbolTable.insert(std::make_pair(symName, symbol));
@@ -29,24 +30,33 @@ ElfSymbolTable::SymbolTable initSymTab(ElfSection *symtab,
   return symbolTable;
 }
 
-ElfSymbolTable::ElfSymbolTable(ElfSection *symtab,
-                               ElfSection *strtab,
-                               uint8_t *rawData,
-                               ElfImage::Type elfType) {
-  switch (elfType) {
-    case ElfImage::ELF32:
-      _symtab = initSymTab<Elf32_Sym,
-                           Elf32_Word>(symtab, strtab, rawData);
-      break;
-    case ElfImage::ELF64:
-      _symtab = initSymTab<Elf64_Sym,
-                           Elf64_Word>(symtab, strtab, rawData);
-      break;
-    default:
-      error("OMG, what's the hell?");
-      abort();
-      break;
-  }
+ElfSymbolTable::ElfSymbolTable(const std::string &name,
+                               Elf32_Shdr *shdr,
+                               Elf32_Shdr *strtab,
+                               uint8_t *rawData)
+  : ElfSection(name, shdr, rawData)
+{
+  _symtab = initSymTab<Elf32_Shdr,
+                       Elf32_Sym,
+                       Elf32_Word>(shdr, strtab, rawData);
+}
+
+ElfSymbolTable::ElfSymbolTable(const std::string &name,
+                               Elf64_Shdr *shdr,
+                               Elf64_Shdr *strtab,
+                               uint8_t *rawData)
+  : ElfSection(name, shdr, rawData)
+{
+  _symtab = initSymTab<Elf64_Shdr,
+                       Elf64_Sym,
+                       Elf64_Word>(shdr, strtab, rawData);
+}
+
+ElfSymbolTable::~ElfSymbolTable() {
+}
+
+void ElfSymbolTable::print(FILE *fp) const {
+  fprintf(fp, "SymbolTable\n");
 }
 
 ElfSymbolTable::iterator ElfSymbolTable::begin() {

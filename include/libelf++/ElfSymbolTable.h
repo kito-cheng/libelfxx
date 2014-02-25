@@ -18,6 +18,7 @@
 #define _LIBELFXX_ELF_SYMBOL_TABLE_H_
 
 #include <libelf++/ElfImage.h>
+#include <libelf++/ElfSection.h>
 #include <elf.h>
 #include <stdio.h>
 #include <map>
@@ -28,16 +29,21 @@ namespace libelfxx {
 class ElfSymbol;
 class ElfSection;
 
-class ElfSymbolTable {
+class ElfSymbolTable : public ElfSection {
   public:
     typedef std::map<std::string, ElfSymbol*> SymbolTable;
     typedef SymbolTable::iterator iterator;
     typedef SymbolTable::const_iterator const_iterator;
 
-    ElfSymbolTable(ElfSection *symtab,
-                   ElfSection *strtab,
-                   uint8_t *rawData,
-                   ElfImage::Type elfType);
+    ElfSymbolTable(const std::string &name,
+                   Elf32_Shdr *shdr,
+                   Elf32_Shdr *strtab,
+                   uint8_t *rawData);
+    ElfSymbolTable(const std::string &name,
+                   Elf64_Shdr *shdr,
+                   Elf64_Shdr *strtab,
+                   uint8_t *rawData);
+    virtual ~ElfSymbolTable();
 
     iterator begin();
     iterator end();
@@ -46,7 +52,7 @@ class ElfSymbolTable {
     const_iterator cbegin() const;
     const_iterator cend() const;
 
-    void print(FILE *fp);
+    virtual void print(FILE *fp) const;
 
     iterator find(const std::string &name);
     const_iterator find(const std::string &name) const;

@@ -179,36 +179,41 @@ static bool _create(FILE *fp, ElfImageData *data,
     Elf_Shdr *shstrtab = &shdrs[ehdr->e_shstrndx];
     ElfImage::Sections *sections = new ElfImage::Sections();
     ElfImage::SectionMap *sectionMap = new ElfImage::SectionMap();
+    ElfSymbolTable *symbolTable = NULL;
+    ElfSymbolTable *dynSymbolTable = NULL;
     int shnum = ehdr->e_shnum;
+    sections->resize(shnum, nullptr);
+
     for (int i=0;i<shnum;++i) {
        Elf_Shdr *shdr = &shdrs[i];
-       const char *sectionName = (const char*)(rawData +
+       std::string sectionName = (const char*)(rawData +
                                                shstrtab->sh_offset +
                                                shdr->sh_name);
-       ElfSection *section = new ElfSection(sectionName, shdr, rawData);
-       sections->push_back(section);
+       ElfSection *section = nullptr;
+       switch (shdr->sh_type) {
+         case SHT_SYMTAB:
+           if (sectionName == ".symtab") {
+             section = symbolTable =
+               new ElfSymbolTable(sectionName, shdr,
+                                  &shdrs[shdr->sh_link], rawData);
+           } else if (".dynsym") {
+             section = dynSymbolTable =
+               new ElfSymbolTable(sectionName, shdr,
+                                  &shdrs[shdr->sh_link], rawData);
+           } else {
+             section =
+               new ElfSymbolTable(sectionName, shdr,
+                                  &shdrs[shdr->sh_link], rawData);
+           }
+           break;
+         default:
+           section = new ElfSection(sectionName, shdr, rawData);
+           break;
+       }
+       (*sections)[i] = section;
        sectionMap->insert(std::make_pair(sectionName, section));
     }
 
-    auto symtabItr = sectionMap->find(".symtab");
-    auto strtabItr = sectionMap->find(".strtab");
-    ElfSymbolTable *symbolTable = NULL;
-    if (symtabItr != sectionMap->end() && strtabItr != sectionMap->end()) {
-      ElfSection *symtab = symtabItr->second;
-      ElfSection *strtab = strtabItr->second;
-      symbolTable =
-        new ElfSymbolTable(symtab, strtab, rawData, elfType);
-    }
-
-    symtabItr = sectionMap->find(".dynsym");
-    strtabItr = sectionMap->find(".dynstr");
-    ElfSymbolTable *dynSymbolTable = NULL;
-    if (symtabItr != sectionMap->end() && strtabItr != sectionMap->end()) {
-      ElfSection *symtab = symtabItr->second;
-      ElfSection *strtab = strtabItr->second;
-      dynSymbolTable =
-        new ElfSymbolTable(symtab, strtab, rawData, elfType);
-    }
     ElfProgramHeader *programHeader = new ElfProgramHeader(ehdr, rawData);
     data->ehdr = ehdr;
     data->rawData = rawData;
