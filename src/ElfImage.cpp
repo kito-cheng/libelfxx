@@ -157,8 +157,7 @@ struct ElfImageData {
 template<class ElfImageData,
          class Elf_Ehdr,
          class Elf_Shdr>
-static bool _create(FILE *fp, ElfImageData *data,
-                    ElfImage::Type elfType) {
+static bool _create(FILE *fp, ElfImageData *data) {
   uint8_t *rawData = nullptr;
   fseek(fp, 0l, SEEK_END);
   long int filesize = ftell(fp);
@@ -181,6 +180,7 @@ static bool _create(FILE *fp, ElfImageData *data,
     ElfImage::SectionMap *sectionMap = new ElfImage::SectionMap();
     ElfSymbolTable *symbolTable = NULL;
     ElfSymbolTable *dynSymbolTable = NULL;
+    ElfDynamicInfo *dynamicInfo = nullptr;
     int shnum = ehdr->e_shnum;
     sections->resize(shnum, nullptr);
 
@@ -206,6 +206,11 @@ static bool _create(FILE *fp, ElfImageData *data,
                                   &shdrs[shdr->sh_link], rawData);
            }
            break;
+         case SHT_DYNAMIC:
+           dynamicInfo =
+             new ElfDynamicInfo(sectionName, shdr,
+                                &shdrs[shdr->sh_link], rawData);
+           break;
          default:
            section = new ElfSection(sectionName, shdr, rawData);
            break;
@@ -222,13 +227,7 @@ static bool _create(FILE *fp, ElfImageData *data,
     data->symbolTable = symbolTable;
     data->dynSymbolTable = dynSymbolTable;
     data->programHeader = programHeader;
-    auto dynSecItr = sectionMap->find(".dynamic");
-    if (dynSecItr != sectionMap->end()) {
-      ElfSection *dynSec = dynSecItr->second;
-      data->dynamicInfo = new ElfDynamicInfo(*sectionMap, dynSec, elfType);
-    } else {
-      data->dynamicInfo = nullptr;
-    }
+    data->dynamicInfo = dynamicInfo;
     return true;
   } while (0);
   /* Error handling... */
@@ -254,7 +253,7 @@ ElfImage *ElfImage::create(FILE *fp) {
       {
         ElfImageData<Elf32_Ehdr> data;
         if (_create<ElfImageData<Elf32_Ehdr>,
-                    Elf32_Ehdr, Elf32_Shdr>(fp, &data, ELF32)){
+                    Elf32_Ehdr, Elf32_Shdr>(fp, &data)){
           return new ElfImage(data.ehdr, data.rawData,
                               data.sections, data.sectionMap,
                               data.symbolTable, data.dynSymbolTable,
@@ -266,7 +265,7 @@ ElfImage *ElfImage::create(FILE *fp) {
       {
         ElfImageData<Elf64_Ehdr> data;
         if (_create<ElfImageData<Elf64_Ehdr>,
-                    Elf64_Ehdr, Elf64_Shdr>(fp, &data, ELF64)){
+                    Elf64_Ehdr, Elf64_Shdr>(fp, &data)){
           return new ElfImage(data.ehdr, data.rawData,
                               data.sections, data.sectionMap,
                               data.symbolTable, data.dynSymbolTable,

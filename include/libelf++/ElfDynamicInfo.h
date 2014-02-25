@@ -18,6 +18,7 @@
 #define _LIBELFXX_ELF_DYNAMIC_INFO_H_
 
 #include <libelf++/ElfImage.h>
+#include <libelf++/ElfSection.h>
 #include <elf.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -40,15 +41,20 @@ class ElfDynamic {
     uint64_t _val;
 };
 
-class ElfDynamicInfo {
+class ElfDynamicInfo : public ElfSection {
   public:
     typedef std::multimap<uint64_t, ElfDynamic*> DynamicTable;
     typedef std::vector<ElfDynamic> DynamicList;
     typedef std::vector<std::string> NeededList;
 
-    ElfDynamicInfo(const ElfImage::SectionMap &sections,
-                   ElfSection *dynsec,
-                   ElfImage::Type type);
+    ElfDynamicInfo(const std::string &name,
+                   Elf32_Shdr *strtab,
+                   Elf32_Shdr *dynsec,
+                   uint8_t *rawData);
+    ElfDynamicInfo(const std::string &name,
+                   Elf64_Shdr *strtab,
+                   Elf64_Shdr *dynsec,
+                   uint8_t *rawData);
 
     const NeededList &needed() const;
     DynamicList find(uint64_t tag) const;
