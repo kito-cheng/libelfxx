@@ -84,7 +84,7 @@ void ElfSection::print(FILE *fp) const {
               "  sh_info : 0x%" PRIx32 "\n"
               "  sh_addralign : %" PRIu64 "\n"
               "  sh_entsize : %" PRIu64 "\n",
-              _nameStr,
+              _nameStr.c_str(),
               _name,
               _type,
               _flags,
@@ -101,7 +101,7 @@ const uint8_t *ElfSection::content() const {
   return _content;
 }
 
-const char *ElfSection::nameStr() const {
+const std::string &ElfSection::nameStr() const {
   return _nameStr;
 }
 

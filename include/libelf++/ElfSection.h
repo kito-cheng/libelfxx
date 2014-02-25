@@ -20,6 +20,7 @@
 #include <elf.h>
 #include <stdint.h>
 #include <stdio.h>
+#include <string>
 
 namespace libelfxx {
 
@@ -29,7 +30,7 @@ class ElfSection {
     ElfSection(const char *name, Elf64_Shdr *shdr, uint8_t *rawData);
     virtual ~ElfSection();
 
-    const char *nameStr() const;
+    const std::string &nameStr() const;
     uint32_t name() const;
     uint32_t type() const;
     uint64_t flags() const;
@@ -57,7 +58,7 @@ class ElfSection {
 
     virtual void print(FILE *fp) const;
   private:
-    const char *_nameStr;
+    std::string _nameStr;
     uint32_t _name;
     uint32_t _type;
     uint64_t _flags;
