@@ -8,6 +8,8 @@ libelf___la_SOURCES = \
   ElfSegment.cpp \
   ElfSymbolTable.cpp \
   ElfDynamicInfo.cpp \
+  ElfRelocationTable.cpp \
+  ElfRelocation.cpp \
   Debug.cpp
 
 noinst_PROGRAMS = elftool

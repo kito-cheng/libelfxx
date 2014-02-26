@@ -57,7 +57,8 @@ class ElfSection {
     const uint8_t *content() const;
 
     virtual void print(FILE *fp) const;
-  private:
+
+  protected:
     std::string _nameStr;
     uint32_t _name;
     uint32_t _type;
