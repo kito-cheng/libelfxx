@@ -216,7 +216,7 @@ static bool _create(FILE *fp, ElfImageData *data) {
                                     rawData);
            break;
          case SHT_DYNAMIC:
-           dynamicInfo =
+           section = dynamicInfo =
              new ElfDynamicInfo(sectionName, shdr,
                                 &shdrs[shdr->sh_link], rawData);
            break;
