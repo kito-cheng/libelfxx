@@ -10,6 +10,7 @@ libelf___la_SOURCES = \
   ElfDynamicInfo.cpp \
   ElfRelocationTable.cpp \
   ElfRelocation.cpp \
+  ElfNote.cpp \
   Debug.cpp
 
 noinst_PROGRAMS = elftool

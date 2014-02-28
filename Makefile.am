@@ -10,4 +10,5 @@ include_libelf___HEADERS=include/libelf++/ElfProgramHeader.h \
                          include/libelf++/ElfDynamicInfo.h \
                          include/libelf++/ElfRelocationTable.h \
                          include/libelf++/ElfRelocation.h \
+                         include/libelf++/ElfNote.h \
                          include/libelf++/ElfSymbol.h

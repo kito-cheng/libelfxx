@@ -20,6 +20,7 @@
 #include <ElfProgramHeader.h>
 #include <ElfDynamicInfo.h>
 #include <ElfRelocationTable.h>
+#include <ElfNote.h>
 #include <Debug.h>
 
 #include <stdio.h>
@@ -206,6 +207,9 @@ static bool _create(FILE *fp, ElfImageData *data) {
                new ElfSymbolTable(sectionName, shdr,
                                   &shdrs[shdr->sh_link], rawData);
            }
+           break;
+         case SHT_NOTE:
+           section = new ElfNote(sectionName, shdr, rawData);
            break;
          case SHT_REL:
          case SHT_RELA:
