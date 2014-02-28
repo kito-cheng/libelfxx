@@ -17,8 +17,14 @@
 #ifndef _LIBELF_PP_H_
 #define _LIBELF_PP_H_
 
+#include<libelf++/ElfDynamicInfo.h>
+#include<libelf++/ElfGNULib.h>
+#include<libelf++/ElfGNULibList.h>
 #include<libelf++/ElfImage.h>
+#include<libelf++/ElfNote.h>
 #include<libelf++/ElfProgramHeader.h>
+#include<libelf++/ElfRelocation.h>
+#include<libelf++/ElfRelocationTable.h>
 #include<libelf++/ElfSection.h>
 #include<libelf++/ElfSegment.h>
 #include<libelf++/ElfSymbol.h>
