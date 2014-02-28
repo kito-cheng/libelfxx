@@ -21,6 +21,7 @@
 #include <ElfDynamicInfo.h>
 #include <ElfRelocationTable.h>
 #include <ElfNote.h>
+#include <ElfGNULibList.h>
 #include <Debug.h>
 
 #include <stdio.h>
@@ -224,6 +225,9 @@ static bool _create(FILE *fp, ElfImageData *data) {
              new ElfDynamicInfo(sectionName, shdr,
                                 &shdrs[shdr->sh_link], rawData);
            break;
+         case SHT_GNU_LIBLIST:
+           section = new ElfGNULibList(sectionName, shdr,
+                                       &shdrs[shdr->sh_link], rawData);
          default:
            section = new ElfSection(sectionName, shdr, rawData);
            break;

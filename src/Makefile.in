@@ -127,7 +127,7 @@ libelf___la_LIBADD =
 am_libelf___la_OBJECTS = ElfImage.lo ElfSection.lo ElfSymbol.lo \
 	ElfProgramHeader.lo ElfSegment.lo ElfSymbolTable.lo \
 	ElfDynamicInfo.lo ElfRelocationTable.lo ElfRelocation.lo \
-	ElfNote.lo Debug.lo
+	ElfNote.lo ElfGNULibList.lo ElfGNULib.lo Debug.lo
 libelf___la_OBJECTS = $(am_libelf___la_OBJECTS)
 AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
@@ -331,6 +331,8 @@ libelf___la_SOURCES = \
   ElfRelocationTable.cpp \
   ElfRelocation.cpp \
   ElfNote.cpp \
+  ElfGNULibList.cpp \
+  ElfGNULib.cpp \
   Debug.cpp
 
 elftool_SOURCES = elftool.cpp
@@ -434,6 +436,8 @@ distclean-compile:
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Debug.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ElfDynamicInfo.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ElfGNULib.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ElfGNULibList.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ElfImage.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ElfNote.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ElfProgramHeader.Plo@am__quote@

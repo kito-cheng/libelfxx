@@ -11,6 +11,8 @@ libelf___la_SOURCES = \
   ElfRelocationTable.cpp \
   ElfRelocation.cpp \
   ElfNote.cpp \
+  ElfGNULibList.cpp \
+  ElfGNULib.cpp \
   Debug.cpp
 
 noinst_PROGRAMS = elftool
