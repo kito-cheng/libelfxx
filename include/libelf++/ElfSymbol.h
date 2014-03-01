@@ -20,6 +20,7 @@
 #include <elf.h>
 #include <stdint.h>
 #include <stdio.h>
+#include <string>
 
 namespace libelfxx {
 
@@ -40,8 +41,8 @@ class ElfSymbol {
       OTHER,
     };
 
-    ElfSymbol(const char *name, Elf32_Sym *sym);
-    ElfSymbol(const char *name, Elf64_Sym *sym);
+    ElfSymbol(const std::string &name, Elf32_Sym *sym);
+    ElfSymbol(const std::string &name, Elf64_Sym *sym);
 
     bool isLocal() const;
     bool isGlobal() const;
@@ -60,12 +61,12 @@ class ElfSymbol {
     uint8_t info() const;
     uint8_t other() const;
     uint16_t shndx() const;
-    const char *name() const;
+    const std::string &name() const;
     uint32_t nameIdx() const;
 
     void print(FILE *fp);
   private:
-    const char *_nameStr;
+    std::string _nameStr;
     uint32_t _name;
     uint8_t _info;
     uint8_t _other;

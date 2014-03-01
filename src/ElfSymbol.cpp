@@ -60,7 +60,7 @@ static ElfSymbol::Type info2type64 (uint8_t info) {
 }
 
 
-ElfSymbol::ElfSymbol(const char *name, Elf32_Sym *sym)
+ElfSymbol::ElfSymbol(const std::string &name, Elf32_Sym *sym)
   : _nameStr(name)
   , _name(sym->st_name)
   , _info(sym->st_info)
@@ -73,7 +73,7 @@ ElfSymbol::ElfSymbol(const char *name, Elf32_Sym *sym)
 {
 }
 
-ElfSymbol::ElfSymbol(const char *name, Elf64_Sym *sym)
+ElfSymbol::ElfSymbol(const std::string &name, Elf64_Sym *sym)
   : _nameStr(name)
   , _name(sym->st_name)
   , _info(sym->st_info)
@@ -95,7 +95,7 @@ void ElfSymbol::print(FILE *fp) {
               "  st_shndx : %" PRIu16 "\n"
               "  st_value : %" PRIx64 "\n"
               "  st_size : %" PRIx64 "\n",
-              _nameStr,
+              _nameStr.c_str(),
               _name,
               _info,
               _other,
@@ -164,7 +164,7 @@ uint16_t ElfSymbol::shndx() const {
   return _shndx;
 }
 
-const char *ElfSymbol::name() const {
+const std::string &ElfSymbol::name() const {
   return _nameStr;
 }
 
