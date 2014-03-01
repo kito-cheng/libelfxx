@@ -30,8 +30,8 @@ class ElfSection {
     ElfSection(const std::string &name, Elf64_Shdr *shdr, uint8_t *rawData);
     virtual ~ElfSection();
 
-    const std::string &nameStr() const;
-    uint32_t name() const;
+    const std::string &name() const;
+    uint32_t nameIdx() const;
     uint32_t type() const;
     uint64_t flags() const;
     uint64_t addr() const;

@@ -426,7 +426,7 @@ printProgramHeaders(libelfxx::ElfImage *image){
       libelfxx::ElfSection *section = image->section(j);
       uint64_t addr = section->addr();
       if (addr >= beginAddr && addr < endAddr) {
-        printf("%s ", section->nameStr().c_str());
+        printf("%s ", section->name().c_str());
       }
     }
     printf("\n");
@@ -442,7 +442,7 @@ printSectionHeaders(libelfxx::ElfImage *image) {
          "   ES Flg Lk Inf Al\n");
   unsigned i = 0;
   for (auto section : *image) {
-    printf("  [%2u] %s\n", i++, section->nameStr().c_str());
+    printf("  [%2u] %s\n", i++, section->name().c_str());
   }
   printf("Key to Flags:\n"
          "  W (write), A (alloc), X (execute), M (merge), S (strings)\n"

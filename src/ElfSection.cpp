@@ -105,11 +105,11 @@ const uint8_t *ElfSection::content() const {
   return _content;
 }
 
-const std::string &ElfSection::nameStr() const {
+const std::string &ElfSection::name() const {
   return _nameStr;
 }
 
-uint32_t ElfSection::name() const {
+uint32_t ElfSection::nameIdx() const {
   return _name;
 }
 
