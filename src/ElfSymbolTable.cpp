@@ -105,7 +105,7 @@ findSymbol(SymTab &symTab, uint64_t address, bool findNearIfPossible) {
   }
   if (findNearIfPossible) {
     uint64_t nearestDistance = (uint64_t)-1;
-    ElfSymbol *nearestSym = NULL;
+    ElfSymbol *nearestSym = nullptr;
     for (auto &sym_:symTab) {
       auto &sym = sym_.second;
       if ((sym->isObject() || sym->isFunction()) &&

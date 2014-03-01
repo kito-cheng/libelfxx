@@ -181,8 +181,8 @@ static bool _create(FILE *fp, ElfImageData *data) {
     Elf_Shdr *shstrtab = &shdrs[ehdr->e_shstrndx];
     ElfImage::Sections *sections = new ElfImage::Sections();
     ElfImage::SectionMap *sectionMap = new ElfImage::SectionMap();
-    ElfSymbolTable *symbolTable = NULL;
-    ElfSymbolTable *dynSymbolTable = NULL;
+    ElfSymbolTable *symbolTable = nullptr;
+    ElfSymbolTable *dynSymbolTable = nullptr;
     ElfDynamicInfo *dynamicInfo = nullptr;
     int shnum = ehdr->e_shnum;
     sections->resize(shnum, nullptr);
