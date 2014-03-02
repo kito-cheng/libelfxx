@@ -17,8 +17,6 @@
 #ifndef _LIBELFXX_ELF_SEGMENT_H_
 #define _LIBELFXX_ELF_SEGMENT_H_
 
-#include <vector>
-
 #include <stdint.h>
 #include <stddef.h>
 #include <elf.h>

@@ -17,8 +17,6 @@
 #ifndef _LIBELFXX_ELF_GNU_LIB_H_
 #define _LIBELFXX_ELF_GNU_LIB_H_
 
-#include <vector>
-#include <libelf++/ElfSection.h>
 #include <string>
 
 namespace libelfxx {

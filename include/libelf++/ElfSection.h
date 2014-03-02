@@ -19,7 +19,6 @@
 
 #include <elf.h>
 #include <stdint.h>
-#include <stdio.h>
 #include <string>
 
 namespace libelfxx {

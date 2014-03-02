@@ -17,7 +17,6 @@
 #ifndef _LIBELFXX_ELF_NOTE_H_
 #define _LIBELFXX_ELF_NOTE_H_
 
-#include <vector>
 #include <libelf++/ElfSection.h>
 #include <libelf++/ElfRelocation.h>
 #include <string>

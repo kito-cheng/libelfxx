@@ -21,7 +21,6 @@
 #include <libelf++/ElfSection.h>
 #include <elf.h>
 #include <stdint.h>
-#include <stdio.h>
 #include <map>
 #include <vector>
 
