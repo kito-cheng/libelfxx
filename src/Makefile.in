@@ -136,7 +136,7 @@ am__v_lt_1 =
 PROGRAMS = $(noinst_PROGRAMS)
 am_elftool_OBJECTS = elftool.$(OBJEXT)
 elftool_OBJECTS = $(am_elftool_OBJECTS)
-elftool_DEPENDENCIES =
+elftool_DEPENDENCIES = libelf++.la
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
 am__v_P_0 = false
@@ -336,7 +336,7 @@ libelf___la_SOURCES = \
   Debug.cpp
 
 elftool_SOURCES = elftool.cpp
-elftool_LDADD = -lelf++
+elftool_LDADD = libelf++.la
 AM_CPPFLAGS = -I$(top_srcdir)/include \
               -I$(top_srcdir)/include/libelf++ \
               -D__STDC_FORMAT_MACROS

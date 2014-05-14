@@ -18,7 +18,7 @@ libelf___la_SOURCES = \
 noinst_PROGRAMS = elftool
 
 elftool_SOURCES = elftool.cpp
-elftool_LDADD = -lelf++
+elftool_LDADD = libelf++.la
 
 AM_CPPFLAGS = -I$(top_srcdir)/include \
               -I$(top_srcdir)/include/libelf++ \
