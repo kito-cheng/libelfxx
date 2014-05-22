@@ -25,6 +25,10 @@
 #include <ElfSection.h>
 #include <Debug.h>
 
+#ifndef ELFOSABI_GNU
+#define ELFOSABI_GNU            3
+#endif
+
 #define DEBUG(args...)
 #define FATAL(args...)
 
