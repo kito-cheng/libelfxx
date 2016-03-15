@@ -25,4 +25,28 @@ ElfRelocation::ElfRelocation(uint64_t info, uint64_t offset,
 {
 }
 
+bool ElfRelocation::isRela() const {
+  return _rela;
+}
+
+uint64_t ElfRelocation::info() const {
+  return _info;
+}
+
+uint64_t ElfRelocation::offset() const {
+  return _offset;
+}
+
+uint64_t ElfRelocation::addend() const {
+  return _addend;
+}
+
+const std::string &ElfRelocation::symbol() const {
+  return _symbol;
+}
+
+uint64_t ElfRelocation::type() const {
+  return _type;
+}
+
 };

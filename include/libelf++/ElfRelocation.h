@@ -33,7 +33,7 @@ class ElfRelocation {
 
     bool isRela() const;
     uint64_t info() const;
-    uint64_t addr() const;
+    uint64_t offset() const;
     uint64_t addend() const;
 
     const std::string &symbol() const;
