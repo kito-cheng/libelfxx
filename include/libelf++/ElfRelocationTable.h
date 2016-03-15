@@ -30,13 +30,19 @@ class ElfRelocationTable : public ElfSection {
     typedef Relocations::iterator iterator;
     typedef Relocations::const_iterator const_iterator;
 
-    ElfRelocationTable(const std::string &name,
+    ElfRelocationTable(Elf32_Shdr *shdrs,
+                       int shnum,
+                       const char *shstrtab,
+                       const std::string &name,
                        Elf32_Shdr *shdr,
                        Elf32_Shdr *symtab,
                        Elf32_Shdr *strtab,
                        uint8_t *rawData);
 
-    ElfRelocationTable(const std::string &name,
+    ElfRelocationTable(Elf64_Shdr *shdrs,
+                       int shnum,
+                       const char *shstrtab,
+                       const std::string &name,
                        Elf64_Shdr *shdr,
                        Elf64_Shdr *symtab,
                        Elf64_Shdr *strtab,

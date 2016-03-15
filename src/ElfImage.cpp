@@ -185,13 +185,13 @@ static bool _create(FILE *fp, ElfImageData *data) {
     ElfSymbolTable *dynSymbolTable = nullptr;
     ElfDynamicInfo *dynamicInfo = nullptr;
     int shnum = ehdr->e_shnum;
+    const char *c_shstrtab = reinterpret_cast<const char*>(
+                               rawData + shstrtab->sh_offset);
     sections->resize(shnum, nullptr);
 
     for (int i=0;i<shnum;++i) {
        Elf_Shdr *shdr = &shdrs[i];
-       std::string sectionName = (const char*)(rawData +
-                                               shstrtab->sh_offset +
-                                               shdr->sh_name);
+       std::string sectionName = c_shstrtab + shdr->sh_name;
        ElfSection *section = nullptr;
        switch (shdr->sh_type) {
          case SHT_SYMTAB:
@@ -215,7 +215,8 @@ static bool _create(FILE *fp, ElfImageData *data) {
          case SHT_REL:
          case SHT_RELA:
            section =
-             new ElfRelocationTable(sectionName, shdr,
+             new ElfRelocationTable(shdrs, shnum, c_shstrtab,
+                                    sectionName, shdr,
                                     &shdrs[shdr->sh_link],
                                     &shdrs[shdrs[shdr->sh_link].sh_link],
                                     rawData);
