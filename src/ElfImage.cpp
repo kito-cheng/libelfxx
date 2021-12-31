@@ -229,6 +229,7 @@ static bool _create(FILE *fp, ElfImageData *data) {
          case SHT_GNU_LIBLIST:
            section = new ElfGNULibList(sectionName, shdr,
                                        &shdrs[shdr->sh_link], rawData);
+	   break;
          default:
            section = new ElfSection(sectionName, shdr, rawData);
            break;
