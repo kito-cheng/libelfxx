@@ -73,9 +73,9 @@ proc_rel(Elf_Shdr_t *shdrs,
           section_name = shstrtab + shdrs[sym->st_shndx].sh_name;
         } else {
           switch (sym->st_shndx) {
-            case SHN_ABS:    section_name = "ABS";
-            case SHN_COMMON: section_name = "COMMON";
-            default:         section_name = "<null>";
+            case SHN_ABS:    section_name = "ABS";    break;
+            case SHN_COMMON: section_name = "COMMON"; break;
+            default:         section_name = "<null>"; break;
           }
         }
         relocations.push_back(
