@@ -18,6 +18,7 @@
 #define _LIBELFXX_ELF_GNU_LIB_H_
 
 #include <string>
+#include <cstdint>
 
 namespace libelfxx {
 
